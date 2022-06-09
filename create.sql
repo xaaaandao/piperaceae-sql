@@ -18,7 +18,6 @@ CREATE TABLE IF NOT EXISTS dados(
 	scientific_name VARCHAR(100), 
 	scientific_name_authorship VARCHAR(100), 
 	identified_by VARCHAR(100),
-	GEORGE BOOLEAN,
 	year_identified VARCHAR(100), 
 	month_identified VARCHAR(100), 
 	day_identified VARCHAR(100), 
@@ -54,5 +53,6 @@ CREATE TABLE IF NOT EXISTS dados(
 	occurrence_remarks VARCHAR(100), 
 	barcode VARCHAR(100), 
 	imagecode VARCHAR(100), 
-	geo_flag VARCHAR(100) 
+	geo_flag VARCHAR(100),
+	GEORGE BOOLEAN
 );
