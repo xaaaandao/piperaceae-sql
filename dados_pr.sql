@@ -14,7 +14,7 @@ SET GLOBAL local_infile = TRUE;
 -- "county", "locality", "decimalLongitude", "decimalLatitude", "verbatimLongitude", "verbatimLatitude",
 -- "coordinatePrecision", "boundingBox", "minimumElevationInMeters", "maximumElevationInMeters", "minimumDepthInMeters",
 -- "maximumDepthInMeters", "sex", "preparationType", "individualCount", "previousCatalogNumber", "relationshipType",
--- "relatedCatalogItem", "occurrenceRemarks", "barcode", "imagecode", "geoFlag"
+-- "relatedCatalogItem", "occurrenceRemarks", "barcode", "imagecode", "geoFlag", "GEORGE", "uf", "nome_estado"
 
 -- gera exportacao
 (SELECT 
