@@ -2,7 +2,9 @@ USE dados_herbarios;
 SET GLOBAL local_infile = TRUE;
 
 -- sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+-- add: secure-file-priv = ''
 -- systemctl restart mysql
+-- sudo chown -R mysql:mysql *
 -- sudo chmod 777 -R tmp/ 
 
 (SELECT 
