@@ -37,3 +37,14 @@ FROM dados
 	(state_province LIKE 'Paran%' OR state_province='PR') AND -- considera Parana, Paraná e PR
 	NOT (dados.county='' OR dados.county IS NULL) -- evita cidade vazio
 INTO OUTFILE '/home/xandao/tmp/dados4.csv' FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n'; -- exportar
+
+SELECT	
+	count(*)
+FROM dados
+	JOIN cidades c on c.nome=dados.state_province -- considera todas cidades do PR
+	WHERE
+	NOT (dados.identified_by='' OR dados.identified_by IS NULL) AND -- considera amostras identificadas
+	(dados.country='Brazil' OR dados.country='Brasil' OR dados.country IS NULL) AND -- considera Brazil, Brasil e vazio
+	(state_province LIKE 'Paran%' OR state_province='PR') AND -- considera Parana, Paraná e PR
+	NOT (dados.county='' OR dados.county IS NULL) AND -- evita cidade vazio
+	dados.GEORGE=1;
