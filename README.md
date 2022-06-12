@@ -15,18 +15,3 @@ to download csv:
 `
 $ make download
 `
-
-to create:
-`
-$ make create
-`
-
-to import:
-`
-$ make import
-`
-
-to get samples of pr|sc|rs|sul:
-`
-$ make pr|sc|rs|sul
-`
