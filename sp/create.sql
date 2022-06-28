@@ -1,11 +1,11 @@
-CREATE DATABASE IF NOT EXISTS dados_herbarios;
-USE dados_herbarios;
-CREATE TABLE IF NOT EXISTS dados(
+CREATE DATABASE IF NOT EXISTS dados_api_sp;
+USE dados_api_sp;
+CREATE TABLE IF NOT EXISTS dados_api_sp(
 	seq VARCHAR(100), 
 	modified VARCHAR(100), 
 	institution_code VARCHAR(100), 
 	collection_code VARCHAR(100), 
-	catalogNumber VARCHAR(100), 
+	catalog_number VARCHAR(100), 
 	basis_of_record VARCHAR(100), 
 	kingdom VARCHAR(100), 
 	phylum VARCHAR(100), 
@@ -47,9 +47,9 @@ CREATE TABLE IF NOT EXISTS dados(
 	sex VARCHAR(100), 
 	preparation_type VARCHAR(100), 
 	individual_count VARCHAR(100), 
-	previous_catalogNumber VARCHAR(100), 
+	previous_catalog_number VARCHAR(100), 
 	relationship_type VARCHAR(100), 
-	related_catalogItem VARCHAR(100), 
+	related_catalog_item VARCHAR(100), 
 	occurrence_remarks VARCHAR(100), 
 	barcode VARCHAR(100), 
 	imagecode VARCHAR(100), 
