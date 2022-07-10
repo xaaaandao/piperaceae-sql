@@ -1,5 +1,11 @@
-CREATE DATABASE IF NOT EXISTS dados_api_sp;
-USE dados_api_sp;
+CREATE DATABASE IF NOT EXISTS herbario;
+USE herbario;
+
+CREATE TABLE IF NOT EXISTS cidades (
+	uf VARCHAR(4),
+	nome VARCHAR(50)  
+);
+
 CREATE TABLE IF NOT EXISTS dados_api_sp(
 	seq VARCHAR(100), 
 	modified VARCHAR(100), 
@@ -55,4 +61,8 @@ CREATE TABLE IF NOT EXISTS dados_api_sp(
 	imagecode VARCHAR(100), 
 	geo_flag VARCHAR(100),
 	GEORGE BOOLEAN
+);
+
+CREATE TABLE IF NOT EXISTS iwssip (
+  cod_barra VARCHAR(30)
 );
