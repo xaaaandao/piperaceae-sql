@@ -1,6 +1,108 @@
-import datetime
-import sqlalchemy.ext.declarative
 import sqlalchemy
+import sqlalchemy.ext.declarative
+import sqlalchemy.orm
+
+
+def connect(cfg):
+    list_hosts = ["localhost", "192.168.0.160"]
+    for host in list_hosts:
+        try:
+            engine = sqlalchemy.create_engine(f"postgresql+psycopg2://{cfg['user']}:{cfg['password']}@{host}:{cfg['port']}/{cfg['database']}", echo=True, pool_pre_ping=True)
+            Session = sqlalchemy.orm.sessionmaker(bind=engine)
+            Session.configure(bind=engine)
+            session = Session()
+            if engine.connect():
+                return engine, session
+        except Exception as e:
+            print(f"problems with host {host} ({e})")
+
+
+def make_operation(session):
+    try:
+        session.commit()
+        session.flush()
+    except Exception as e:
+        session.rollback()
+        print(e)
+        raise
+    finally:
+        session.close()
+
+
+def create_table_if_not_exists(cfg, engine, table_name):
+    if not sqlalchemy.inspect(engine).has_table(table_name, schema=cfg["database"]):
+        Base.metadata.create_all(engine)
+
+
+def create_datasp(info):
+    return DataSP(seq=info["seq"],
+                  modified=info["modified"], institution_code=info["institutionCode"],
+                  collection_code=info["collectionCode"], catalog_number=info["catalogNumber"],
+                  basis_of_record=info["basisOfRecord"], kingdom=info["kingdom"], phylum=info["phylum"],
+                  classe=info["class"], order=info["order"], family=info["family"],
+                  genus=info["genus"],
+                  specific_epithet=info["specificEpithet"],
+                  infraspecific_epithet=info["infraspecificEpithet"],
+                  scientific_name=info["scientificName"],
+                  scientific_name_authorship=info["scientificNameAuthorship"],
+                  identified_by=info["identifiedBy"], year_identified=info["yearIdentified"],
+                  month_identified=info["monthIdentified"], day_identified=info["dayIdentified"],
+                  type_status=info["typeStatus"],
+                  recorded_by=info["recordedBy"], record_number=info["recordNumber"],
+                  field_number=info["fieldNumber"], year=info["year"], month=info["month"],
+                  day=info["day"], event_time=info["eventTime"],
+                  continent_ocean=info["continentOcean"], country=info["country"],
+                  state_province=info["stateProvince"], county=info["county"], locality=info["locality"],
+                  decimal_longitude=info["decimalLongitude"],
+                  decimal_latitude=info["decimalLatitude"], verbatim_longitude=info["verbatimLongitude"],
+                  verbatim_latitude=info["verbatimLatitude"],
+                  coordinate_precision=info["coordinatePrecision"],
+                  bounding_box=info["boundingBox"],
+                  minimum_elevation_in_meters=info["minimumElevationInMeters"],
+                  maximum_elevation_in_meters=info["maximumElevationInMeters"],
+                  minimum_depth_in_meters=info["minimumDepthInMeters"],
+                  maximum_depth_in_meters=info["maximumDepthInMeters"], sex=info["sex"],
+                  preparation_type=info["preparationType"],
+                  individual_count=info["individualCount"],
+                  previous_catalog_number=info["previousCatalogNumber"],
+                  relationship_type=info["relationshipType"],
+                  related_catalog_item=info["relatedCatalogItem"],
+                  occurrence_remarks=info["occurrenceRemarks"], barcode=info["barcode"],
+                  imagecode=info["imagecode"], geo_flag=info["geoFlag"])
+
+
+def get_key(json, key):
+    if key in json:
+        return json[key]
+    raise KeyError(f"key {key} not found")
+
+
+def get_id(json):
+    if "id" in json:
+        return json["id"]
+    raise KeyError(f"key id not found")
+
+
+def get_county_name(json):
+    if "nome" in json:
+        return json["nome"]
+    raise KeyError(f"key nome not found")
+
+
+def get_uf(json):
+    if "microrregiao" in json:
+        if "mesorregiao" in json["microrregiao"]:
+            if "UF" in json["microrregiao"]["mesorregiao"]:
+                return json["microrregiao"]["mesorregiao"]["UF"]["sigla"], json["microrregiao"]["mesorregiao"]["UF"]["nome"]
+            raise KeyError("key UF not found")
+        raise KeyError("key mesorregiao not found")
+    raise KeyError("key microrregiao not found")
+
+
+def create_county(json):
+    uf, uf_name = get_uf(json)
+    return County(id=get_id(json), county=get_county_name(json), uf=uf, uf_name=uf_name)
+
 
 Base = sqlalchemy.ext.declarative.declarative_base()
 
@@ -77,8 +179,21 @@ class DataSP(Base):
                "bounding_box=%s, minimum_elevation_in_meters=%s, maximum_elevation_in_meters=%s, " \
                "minimum_depth_in_meters=%s, maximum_depth_in_meters=%s, sex=%s, preparation_type=%s, " \
                "individual_count=%s, previous_catalog_number=%s, relationship_type=%s, related_catalog_item=%s, " \
-               "occurrence_remarks=%s, barcode=%s, imagecode=%s, geo_flag=%s) "
+               "occurrence_remarks=%s, barcode=%s, imagecode=%s, geo_flag=%s)"
 
 
-def get_base():
-    return Base
+# County is muncipio, condado
+class County(Base):
+    __tablename__ = "county"
+
+    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
+    county = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    uf = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    uf_name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+
+    def __repr__(self):
+        return "County(id=%s, county=%s, county_normalized=%s, uf=%s, uf_normalized=%s, uf_name=%s, uf_name_normalized=%s)"
+
+
+
+
