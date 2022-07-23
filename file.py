@@ -4,8 +4,8 @@ import pathlib
 
 
 def create_outfile(list_seq):
-    pathlib.Path("result").mkdir(parents=True, exist_ok=True)
-    path_to_file = os.path.join("result", f"{datetime.datetime.now().strftime('%d-%m-%Y-%H-%M-%S')}.csv")
+    pathlib.Path("out").mkdir(parents=True, exist_ok=True)
+    path_to_file = os.path.join("out", f"{datetime.datetime.now().strftime('%d-%m-%Y-%H-%M-%S')}.csv")
     try:
         with open(path_to_file, "w") as file:
             file.write("seq; column; new_column; value_searched\n")
