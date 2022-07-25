@@ -7,7 +7,7 @@ def connect(cfg):
     list_hosts = ("192.168.0.160", "localhost")
     for host in list_hosts:
         try:
-            engine = sqlalchemy.create_engine(f"postgresql+psycopg2://{cfg['user']}:{cfg['password']}@{host}:{cfg['port']}/{cfg['database']}", echo=True, pool_pre_ping=True)
+            engine = sqlalchemy.create_engine(f"postgresql+psycopg2://{cfg['user']}:{cfg['password']}@{host}:{cfg['port']}/{cfg['database']}", pool_pre_ping=True)
             Session = sqlalchemy.orm.sessionmaker(bind=engine)
             Session.configure(bind=engine)
             session = Session()
