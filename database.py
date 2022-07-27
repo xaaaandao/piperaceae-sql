@@ -1,7 +1,8 @@
 import sqlalchemy
+from sqlalchemy.dialects import postgresql
 import sqlalchemy.ext.declarative
 import sqlalchemy.orm
-
+import sqlalchemy.schema
 
 def connect(cfg):
     list_hosts = list(["localhost", "192.168.0.160"])
@@ -104,7 +105,23 @@ def create_county(json):
     return County(id=get_id(json), county=get_county_name(json), uf=uf, uf_name=uf_name)
 
 
+def create_tsvector(*args):
+    field, weight = args[0]
+    exp = sqlalchemy.func.setweight(sqlalchemy.func.to_tsvector("portuguese", field), weight)
+    for field, weight in args[1:]:
+        exp = sqlalchemy.sql.operators.op(exp, '||', sqlalchemy.func.setweight(sqlalchemy.func.to_tsvector("portuguese", field), weight))
+    print(exp)
+    return exp
+
+
 Base = sqlalchemy.ext.declarative.declarative_base()
+
+
+# def create_tsvector(*args):
+#     exp = args[0]
+#     for e in args[1:]:
+#         exp += ' ' + e
+#     return sqlalchemy.func.to_tsvector('english', exp)
 
 
 class DataSP(Base):
@@ -112,61 +129,83 @@ class DataSP(Base):
 
     seq = sqlalchemy.Column(sqlalchemy.BigInteger, primary_key=True)
     modified = sqlalchemy.Column(sqlalchemy.DateTime, nullable=True)
-    institution_code = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    collection_code = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    catalog_number = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    basis_of_record = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    kingdom = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    phylum = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    classe = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    order = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    family = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    genus = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    specific_epithet = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    infraspecific_epithet = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    scientific_name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    scientific_name_authorship = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    identified_by = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    year_identified = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    month_identified = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    day_identified = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    type_status = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    recorded_by = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    record_number = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    field_number = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    institution_code = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    collection_code = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    catalog_number = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    basis_of_record = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    kingdom = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    phylum = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    classe = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    order = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    family = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    genus = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    specific_epithet = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    infraspecific_epithet = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    scientific_name = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    scientific_name_authorship = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    identified_by = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    year_identified = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    month_identified = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    day_identified = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    type_status = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    recorded_by = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    record_number = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    field_number = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
     year = sqlalchemy.Column(sqlalchemy.BigInteger, nullable=True)
     month = sqlalchemy.Column(sqlalchemy.BigInteger, nullable=True)
     day = sqlalchemy.Column(sqlalchemy.BigInteger, nullable=True)
-    event_time = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    continent_ocean = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    country = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    state_province = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    county = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    locality = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    decimal_longitude = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    decimal_latitude = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    verbatim_longitude = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    verbatim_latitude = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    coordinate_precision = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    bounding_box = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    event_time = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    continent_ocean = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    country = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    state_province = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    county = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    locality = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    decimal_longitude = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    decimal_latitude = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    verbatim_longitude = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    verbatim_latitude = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    coordinate_precision = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    bounding_box = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
     minimum_elevation_in_meters = sqlalchemy.Column(sqlalchemy.BigInteger, nullable=True)
     maximum_elevation_in_meters = sqlalchemy.Column(sqlalchemy.BigInteger, nullable=True)
     minimum_depth_in_meters = sqlalchemy.Column(sqlalchemy.BigInteger, nullable=True)
     maximum_depth_in_meters = sqlalchemy.Column(sqlalchemy.BigInteger, nullable=True)
-    sex = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    preparation_type = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    sex = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    preparation_type = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
     individual_count = sqlalchemy.Column(sqlalchemy.BigInteger, nullable=True)
-    previous_catalog_number = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    relationship_type = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    related_catalog_item = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    occurrence_remarks = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    barcode = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    imagecode = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    geo_flag = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    previous_catalog_number = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    relationship_type = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    related_catalog_item = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    occurrence_remarks = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    barcode = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    imagecode = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    geo_flag = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
     george = sqlalchemy.Column(sqlalchemy.Boolean, nullable=True)
-    my_country = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    my_state = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    my_city = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    my_country = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    my_state = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    my_city = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+
+    # 1#
+    __ts_vector__ = create_tsvector(
+        (county, 'A'),
+        (state_province, 'B')
+    )
+
+    __table_args__ = (
+        sqlalchemy.Index('my_index', __ts_vector__, postgresql_using='gin'),
+    )
+    #
+    # # __ts_vector__ = create_tsvector(
+    # #     sqlalchemy.cast(sqlalchemy.func.coalesce(county, ''), postgresql.TEXT)
+    # # )
+    # #
+    # # __table_args__ = (
+    # #     sqlalchemy.Index(
+    # #         'idx_person_fts',
+    # #         __ts_vector__,
+    # #         postgresql_using='gin'
+    # #     ),
+    # # )
 
     def __repr__(self):
         return "DataSP(seq=%s, modified=%s, institution_code=%s, collection_code=%s, catalog_number=%s, " \
@@ -187,9 +226,9 @@ class County(Base):
     __tablename__ = "county"
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
-    county = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    uf = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    uf_name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    county = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    uf = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    uf_name = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
 
     def __repr__(self):
         return "County(id=%s, county=%s, county_normalized=%s, uf=%s, uf_normalized=%s, uf_name=%s, uf_name_normalized=%s)"

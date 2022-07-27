@@ -4,7 +4,6 @@ import re
 
 from database import DataSP
 
-
 def convert_header_to_snake_case(dataframe):
     return  {column_name: re.sub(r'(?<!^)(?=[A-Z])', '_', column_name).lower() for column_name in get_columns_dataframe(dataframe)}
 
