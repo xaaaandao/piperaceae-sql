@@ -3,7 +3,6 @@ import sqlalchemy.ext.declarative
 import sqlalchemy.orm
 import sqlalchemy.schema
 
-
 def connect(cfg):
     try:
         engine = sqlalchemy.create_engine(

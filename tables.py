@@ -1,16 +1,10 @@
 import sqlalchemy
 import sqlalchemy.ext.declarative
+import string
+
+from sqlalchemy.dialects import postgresql
 
 Base = sqlalchemy.ext.declarative.declarative_base()
-
-
-def create_tsvector(*args):
-    field, weight = args[0]
-    exp = sqlalchemy.func.setweight(sqlalchemy.func.to_tsvector('portuguese', field), weight)
-    for field, weight in args[1:]:
-        exp = sqlalchemy.sql.operators.op(exp, '||', sqlalchemy.func.setweight(sqlalchemy.func.to_tsvector('portuguese', field), weight))
-    print(exp)
-    return exp
 
 
 def create_datasp(info):
@@ -88,6 +82,19 @@ def get_base():
     return Base
 
 
+def next_letter():
+    for s in string.ascii_lowercase:
+        yield s
+
+def create_tsvector(*args):
+    CONFIG = "portuguese"
+    field, weight = args[0]
+    exp = sqlalchemy.func.setweight(sqlalchemy.func.to_tsvector(CONFIG, field), weight)
+    for field, weight in args[1:]:
+        exp = sqlalchemy.sql.operators.op(exp, '||', sqlalchemy.func.setweight(sqlalchemy.func.to_tsvector(CONFIG, field), weight))
+    return exp
+
+
 class DataSP(Base):
     __tablename__ = "data"
 
@@ -148,15 +155,17 @@ class DataSP(Base):
     my_country = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
     my_state = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
     my_city = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    index = sqlalchemy.Column(postgresql.TSVECTOR, nullable=True)
 
-    # 1#
-    __ts_vector__ = create_tsvector(
-        (county, 'A'),
-        (state_province, 'B')
-    )
+    # # 1#
+    # __ts_vector__ = create_tsvector(
+    #     (county, 'A'),
+    #     (state_province, 'B'),
+    #     (country, 'C')
+    # )
 
     __table_args__ = (
-        sqlalchemy.Index('my_index', __ts_vector__, postgresql_using='gin'),
+        sqlalchemy.Index('my_index', index, postgresql_using='gin'),
     )
 
     def __repr__(self):

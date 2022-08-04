@@ -1,11 +1,71 @@
 drop table data;
-truncate table data;
 
+truncate
+	table data;
 
-ALTER TABLE data ADD COLUMN test tsvector;
-UPDATE data SET test = setweight(to_tsvector(data.country), 'A') || setweight(to_tsvector(data.state_province), 'B') || setweight(to_tsvector(data.county), 'C');
-CREATE INDEX IF NOT EXISTS idx_test ON data USING gin(test);
---select data.seq, ts_rank(test, q) as rank from data, plainto_tsquery('curitiba') q where test @@ q ORDER BY rank desc;
-SELECT seq, DISts_rank(test, query) AS score FROM data, to_tsquery('portuguese', 'paraná') query WHERE test @@ query ORDER BY score DESC;
+alter table data add column test tsvector;
 
-select * from data where data.seq=42;
+update
+	data set
+	test = setweight(to_tsvector('portuguese', coalesce(data.country, '')), 'A') ||
+setweight(to_tsvector('portuguese', coalesce(data.state_province, '')), 'B') ||
+setweight(to_tsvector('portuguese', coalesce(data.county, '')), 'C');
+
+create index if not exists idx_test on
+data
+	using gin(test);
+--SELECT seq, ts_rank(test, query) AS score FROM data, to_tsquery('portuguese', 'paraná') query WHERE test @@ query ORDER BY score DESC;
+
+select
+	seq,
+	ts_rank(test, query) as score
+from
+	data,
+	to_tsquery('portuguese', 'Paraná') query
+where
+	test @@ query
+order by
+	score desc;
+
+select
+	seq,
+	ts_rank(test, query) as score
+from
+	data,
+	to_tsquery('portuguese', 'Paraná') query
+where
+	test @@ query
+order by
+	score;
+
+select
+	seq,
+	ts_rank(test, query) as score
+from
+	data,
+	to_tsquery('portuguese', 'Paraná') query
+where
+	test @@ query
+order by
+	score;
+
+select
+	distinct (ts_rank(test, query)) as score
+from
+	data,
+	to_tsquery('portuguese', 'Paraná') query
+where
+	test @@ query;
+
+select
+	data.seq,
+	data.county,
+	data.state_province,
+	data.country,
+	data.test
+from
+	data;
+	
+select count(*) from data;
+
+select * from data;

@@ -30,8 +30,8 @@ def column_is_string_or_varchar_or_text(column):
     return str(column.type).lower() in ("string", "varchar", "text")
 
 
-def get_columns_text():
-    return list([column.key for column in get_columns_table(DataSP) if column_is_string_or_varchar_or_text(column)])
+def get_columns_text(table):
+    return list([column.key for column in get_columns_table(table) if column_is_string_or_varchar_or_text(column)])
 
 
 def remove_white_spaces(string):
