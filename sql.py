@@ -7,7 +7,7 @@ from unaccent import unaccent
 
 
 def create_table_if_not_exists(cfg, engine, table_name):
-    if not sqlalchemy.inspect(engine).has_table(table_name, schema=cfg["database"]):
+    if not engine.has_table(table_name, schema=cfg["database"]):
         get_base().metadata.create_all(engine)
 
 

@@ -25,8 +25,8 @@ def make_operation(session):
         session.rollback()
         print(e)
         raise
-    finally:
-        session.close()
+    # finally:
+    #     session.close()
 
 
 
