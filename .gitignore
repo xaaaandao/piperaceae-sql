@@ -1,2 +1,6 @@
 result/
 imgs_george
+*.pyc
+*.pb
+*.xml
+*.iml

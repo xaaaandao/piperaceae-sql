@@ -156,6 +156,7 @@ class DataSP(Base):
     my_state = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
     my_city = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
     index = sqlalchemy.Column(postgresql.TSVECTOR, nullable=True)
+    index_identified_by = sqlalchemy.Column(postgresql.TSVECTOR, nullable=True)
 
     # # 1#
     # __ts_vector__ = create_tsvector(
@@ -166,6 +167,7 @@ class DataSP(Base):
 
     __table_args__ = (
         sqlalchemy.Index('my_index', index, postgresql_using='gin'),
+        sqlalchemy.Index('my_index_identified_by', index_identified_by, postgresql_using='gin'),
     )
 
     def __repr__(self):
