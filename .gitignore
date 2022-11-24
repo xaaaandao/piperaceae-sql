@@ -1,5 +1,5 @@
 result/
-imgs_george
+dataset_george
 *.pyc
 *.pb
 *.xml

@@ -1,76 +1,49 @@
-import sqlalchemy
+import sqlalchemy as sa
 import sqlalchemy.ext.declarative
 import string
 
-from sqlalchemy.dialects import postgresql
+from sqlalchemy_utils.types.ts_vector import TSVectorType
 
-Base = sqlalchemy.ext.declarative.declarative_base()
+from api import get_id, get_county_name, get_uf
+
+Base = sa.ext.declarative.declarative_base()
 
 
 def create_datasp(info):
-    return DataSP(seq=info["seq"],
-                  modified=info["modified"], institution_code=info["institution_code"],
-                  collection_code=info["collection_code"], catalog_number=info["catalog_number"],
-                  basis_of_record=info["basis_of_record"], kingdom=info["kingdom"], phylum=info["phylum"],
-                  classe=info["class"], order=info["order"], family=info["family"],
-                  genus=info["genus"],
-                  specific_epithet=info["specific_epithet"],
-                  infraspecific_epithet=info["infraspecific_epithet"],
-                  scientific_name=info["scientific_name"],
-                  scientific_name_authorship=info["scientific_name_authorship"],
-                  identified_by=info["identified_by"], year_identified=info["year_identified"],
-                  month_identified=info["month_identified"], day_identified=info["day_identified"],
-                  type_status=info["type_status"],
-                  recorded_by=info["recorded_by"], record_number=info["record_number"],
-                  field_number=info["field_number"], year=info["year"], month=info["month"],
-                  day=info["day"], event_time=info["event_time"],
-                  continent_ocean=info["continent_ocean"], country=info["country"],
-                  state_province=info["state_province"], county=info["county"], locality=info["locality"],
-                  decimal_longitude=info["decimal_longitude"],
-                  decimal_latitude=info["decimal_latitude"], verbatim_longitude=info["verbatim_longitude"],
-                  verbatim_latitude=info["verbatim_latitude"],
-                  coordinate_precision=info["coordinate_precision"],
-                  bounding_box=info["bounding_box"],
-                  minimum_elevation_in_meters=info["minimum_elevation_in_meters"],
-                  maximum_elevation_in_meters=info["maximum_elevation_in_meters"],
-                  minimum_depth_in_meters=info["minimum_depth_in_meters"],
-                  maximum_depth_in_meters=info["maximum_depth_in_meters"], sex=info["sex"],
-                  preparation_type=info["preparation_type"],
-                  individual_count=info["individual_count"],
-                  previous_catalog_number=info["previous_catalog_number"],
-                  relationship_type=info["relationship_type"],
-                  related_catalog_item=info["related_catalog_item"],
-                  occurrence_remarks=info["occurrence_remarks"], barcode=info["barcode"],
-                  imagecode=info["imagecode"], geo_flag=info["geo_flag"])
-
-
-def get_key(json, key):
-    if key in json:
-        return json[key]
-    raise KeyError(f"key {key} not found")
-
-
-def get_id(json):
-    if "id" in json:
-        return json["id"]
-    raise KeyError(f"key id not found")
-
-
-def get_county_name(json):
-    if "nome" in json:
-        return json["nome"]
-    raise KeyError(f"key nome not found")
-
-
-def get_uf(json):
-    if "microrregiao" in json:
-        if "mesorregiao" in json["microrregiao"]:
-            if "UF" in json["microrregiao"]["mesorregiao"]:
-                return json["microrregiao"]["mesorregiao"]["UF"]["sigla"], json["microrregiao"]["mesorregiao"]["UF"][
-                    "nome"]
-            raise KeyError("key UF not found")
-        raise KeyError("key mesorregiao not found")
-    raise KeyError("key microrregiao not found")
+    return DataSP(seq=info['seq'],
+                  modified=info['modified'], institution_code=info['institution_code'],
+                  collection_code=info['collection_code'], catalog_number=info['catalog_number'],
+                  basis_of_record=info['basis_of_record'], kingdom=info['kingdom'], phylum=info['phylum'],
+                  classe=info['class'], order=info['order'], family=info['family'],
+                  genus=info['genus'],
+                  specific_epithet=info['specific_epithet'],
+                  infraspecific_epithet=info['infraspecific_epithet'],
+                  scientific_name=info['scientific_name'],
+                  scientific_name_authorship=info['scientific_name_authorship'],
+                  identified_by=info['identified_by'], year_identified=info['year_identified'],
+                  month_identified=info['month_identified'], day_identified=info['day_identified'],
+                  type_status=info['type_status'],
+                  recorded_by=info['recorded_by'], record_number=info['record_number'],
+                  field_number=info['field_number'], year=info['year'], month=info['month'],
+                  day=info['day'], event_time=info['event_time'],
+                  continent_ocean=info['continent_ocean'], country=info['country'],
+                  state_province=info['state_province'], county=info['county'], locality=info['locality'],
+                  decimal_longitude=info['decimal_longitude'],
+                  decimal_latitude=info['decimal_latitude'], verbatim_longitude=info['verbatim_longitude'],
+                  verbatim_latitude=info['verbatim_latitude'],
+                  coordinate_precision=info['coordinate_precision'],
+                  bounding_box=info['bounding_box'],
+                  minimum_elevation_in_meters=info['minimum_elevation_in_meters'],
+                  maximum_elevation_in_meters=info['maximum_elevation_in_meters'],
+                  minimum_depth_in_meters=info['minimum_depth_in_meters'],
+                  maximum_depth_in_meters=info['maximum_depth_in_meters'], sex=info['sex'],
+                  preparation_type=info['preparation_type'],
+                  individual_count=info['individual_count'],
+                  previous_catalog_number=info['previous_catalog_number'],
+                  relationship_type=info['relationship_type'],
+                  related_catalog_item=info['related_catalog_item'],
+                  occurrence_remarks=info['occurrence_remarks'], barcode=info['barcode'],
+                  imagecode=info['imagecode'], geo_flag=info['geo_flag'])
 
 
 def create_county(json):
@@ -82,116 +55,102 @@ def get_base():
     return Base
 
 
-def next_letter():
-    for s in string.ascii_lowercase:
-        yield s
-
-def create_tsvector(*args):
-    CONFIG = "portuguese"
-    field, weight = args[0]
-    exp = sqlalchemy.func.setweight(sqlalchemy.func.to_tsvector(CONFIG, field), weight)
-    for field, weight in args[1:]:
-        exp = sqlalchemy.sql.operators.op(exp, '||', sqlalchemy.func.setweight(sqlalchemy.func.to_tsvector(CONFIG, field), weight))
-    return exp
-
-
 class DataSP(Base):
-    __tablename__ = "data"
+    __tablename__ = 'data'
 
-    seq = sqlalchemy.Column(sqlalchemy.BigInteger, primary_key=True)
-    modified = sqlalchemy.Column(sqlalchemy.DateTime, nullable=True)
-    institution_code = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    collection_code = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    catalog_number = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    basis_of_record = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    kingdom = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    phylum = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    classe = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    order = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    family = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    genus = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    specific_epithet = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    infraspecific_epithet = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    scientific_name = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    scientific_name_authorship = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    identified_by = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    year_identified = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    month_identified = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    day_identified = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    type_status = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    recorded_by = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    record_number = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    field_number = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    year = sqlalchemy.Column(sqlalchemy.BigInteger, nullable=True)
-    month = sqlalchemy.Column(sqlalchemy.BigInteger, nullable=True)
-    day = sqlalchemy.Column(sqlalchemy.BigInteger, nullable=True)
-    event_time = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    continent_ocean = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    country = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    state_province = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    county = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    locality = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    decimal_longitude = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    decimal_latitude = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    verbatim_longitude = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    verbatim_latitude = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    coordinate_precision = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    bounding_box = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    minimum_elevation_in_meters = sqlalchemy.Column(sqlalchemy.BigInteger, nullable=True)
-    maximum_elevation_in_meters = sqlalchemy.Column(sqlalchemy.BigInteger, nullable=True)
-    minimum_depth_in_meters = sqlalchemy.Column(sqlalchemy.BigInteger, nullable=True)
-    maximum_depth_in_meters = sqlalchemy.Column(sqlalchemy.BigInteger, nullable=True)
-    sex = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    preparation_type = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    individual_count = sqlalchemy.Column(sqlalchemy.BigInteger, nullable=True)
-    previous_catalog_number = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    relationship_type = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    related_catalog_item = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    occurrence_remarks = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    barcode = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    imagecode = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    geo_flag = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    george = sqlalchemy.Column(sqlalchemy.Boolean, nullable=True)
-    my_country = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    my_state = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    my_city = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    index = sqlalchemy.Column(postgresql.TSVECTOR, nullable=True)
-    index_identified_by = sqlalchemy.Column(postgresql.TSVECTOR, nullable=True)
-
-    # # 1#
-    # __ts_vector__ = create_tsvector(
-    #     (county, 'A'),
-    #     (state_province, 'B'),
-    #     (country, 'C')
-    # )
+    seq = sa.Column(sa.BigInteger, primary_key=True)
+    modified = sa.Column(sa.DateTime, nullable=True)
+    institution_code = sa.Column(sa.String, nullable=True)
+    collection_code = sa.Column(sa.String, nullable=True)
+    catalog_number = sa.Column(sa.String, nullable=True)
+    basis_of_record = sa.Column(sa.String, nullable=True)
+    kingdom = sa.Column(sa.String, nullable=True)
+    phylum = sa.Column(sa.String, nullable=True)
+    classe = sa.Column(sa.String, nullable=True)
+    order = sa.Column(sa.String, nullable=True)
+    family = sa.Column(sa.String, nullable=True)
+    genus = sa.Column(sa.String, nullable=True)
+    specific_epithet = sa.Column(sa.String, nullable=True)
+    infraspecific_epithet = sa.Column(sa.String, nullable=True)
+    scientific_name = sa.Column(sa.String, nullable=True)
+    scientific_name_authorship = sa.Column(sa.String, nullable=True)
+    identified_by = sa.Column(sa.String, nullable=True)
+    year_identified = sa.Column(sa.String, nullable=True)
+    month_identified = sa.Column(sa.String, nullable=True)
+    day_identified = sa.Column(sa.String, nullable=True)
+    type_status = sa.Column(sa.String, nullable=True)
+    recorded_by = sa.Column(sa.String, nullable=True)
+    record_number = sa.Column(sa.String, nullable=True)
+    field_number = sa.Column(sa.String, nullable=True)
+    year = sa.Column(sa.BigInteger, nullable=True)
+    month = sa.Column(sa.BigInteger, nullable=True)
+    day = sa.Column(sa.BigInteger, nullable=True)
+    event_time = sa.Column(sa.String, nullable=True)
+    continent_ocean = sa.Column(sa.String, nullable=True)
+    country = sa.Column(sa.String, nullable=True)
+    state_province = sa.Column(sa.String, nullable=True)
+    county = sa.Column(sa.String, nullable=True)
+    locality = sa.Column(sa.String, nullable=True)
+    decimal_longitude = sa.Column(sa.String, nullable=True)
+    decimal_latitude = sa.Column(sa.String, nullable=True)
+    verbatim_longitude = sa.Column(sa.String, nullable=True)
+    verbatim_latitude = sa.Column(sa.String, nullable=True)
+    coordinate_precision = sa.Column(sa.String, nullable=True)
+    bounding_box = sa.Column(sa.String, nullable=True)
+    minimum_elevation_in_meters = sa.Column(sa.BigInteger, nullable=True)
+    maximum_elevation_in_meters = sa.Column(sa.BigInteger, nullable=True)
+    minimum_depth_in_meters = sa.Column(sa.BigInteger, nullable=True)
+    maximum_depth_in_meters = sa.Column(sa.BigInteger, nullable=True)
+    sex = sa.Column(sa.String, nullable=True)
+    preparation_type = sa.Column(sa.String, nullable=True)
+    individual_count = sa.Column(sa.BigInteger, nullable=True)
+    previous_catalog_number = sa.Column(sa.String, nullable=True)
+    relationship_type = sa.Column(sa.String, nullable=True)
+    related_catalog_item = sa.Column(sa.String, nullable=True)
+    occurrence_remarks = sa.Column(sa.String, nullable=True)
+    barcode = sa.Column(sa.String, nullable=True)
+    imagecode = sa.Column(sa.String, nullable=True)
+    geo_flag = sa.Column(sa.String, nullable=True)
+    george = sa.Column(sa.Boolean, nullable=True)
+    country_tsv = sa.Column(TSVectorType('country', regconfig='portuguese'),
+                            sa.Computed('to_tsvector(\'portuguese\', \"country\")', persisted=True))
+    county_tsv =sa.Column(TSVectorType('county', regconfig='portuguese'),
+                            sa.Computed('to_tsvector(\'portuguese\', \"county\")', persisted=True))
+    state_province_tsv = sa.Column(TSVectorType('state_province', regconfig='portuguese'),
+                            sa.Computed('to_tsvector(\'portuguese\', \"state_province\")', persisted=True))
+    identifiedby_tsv = sa.Column(TSVectorType('identified_by', regconfig='portuguese'),
+                            sa.Computed('to_tsvector(\'portuguese\', \"identified_by\")', persisted=True))
 
     __table_args__ = (
-        sqlalchemy.Index('my_index', index, postgresql_using='gin'),
-        sqlalchemy.Index('my_index_identified_by', index_identified_by, postgresql_using='gin'),
+        # Indexing the TSVector column
+        sa.Index('idx_country_tsv', country_tsv, postgresql_using="gin"),
+        sa.Index('idx_county_tsv', country_tsv, postgresql_using="gin"),
+        sa.Index('idx_state_province_tsv', country_tsv, postgresql_using="gin"),
+        sa.Index('idx_identified_tsv', identifiedby_tsv, postgresql_using="gin"),
     )
 
     def __repr__(self):
-        return "DataSP(seq=%s, modified=%s, institution_code=%s, collection_code=%s, catalog_number=%s, " \
-               "basis_of_record=%s, kingdom=%s, phylum=%s, classe=%s, order=%s, family=%s, genus=%s, " \
-               "specific_epithet=%s, infraspecific_epithet=%s, scientific_name=%s, scientific_name_authorship=%s, " \
-               "identified_by=%s, year_identified=%s, month_identified=%s, day_identified=%s, type_status=%s, " \
-               "recorded_by=%s, record_number=%s, field_number=%s, year=%s, month=%s, day=%s, event_time=%s, " \
-               "continent_ocean=%s, country=%s, state_province=%s, county=%s, locality=%s, decimal_longitude=%s, " \
-               "decimal_latitude=%s, verbatim_longitude=%s, verbatim_latitude=%s, coordinate_precision=%s, " \
-               "bounding_box=%s, minimum_elevation_in_meters=%s, maximum_elevation_in_meters=%s, " \
-               "minimum_depth_in_meters=%s, maximum_depth_in_meters=%s, sex=%s, preparation_type=%s, " \
-               "individual_count=%s, previous_catalog_number=%s, relationship_type=%s, related_catalog_item=%s, " \
-               "occurrence_remarks=%s, barcode=%s, imagecode=%s, geo_flag=%s)"
+        return 'DataSP(seq=%s, modified=%s, institution_code=%s, collection_code=%s, catalog_number=%s, ' \
+               'basis_of_record=%s, kingdom=%s, phylum=%s, classe=%s, order=%s, family=%s, genus=%s, ' \
+               'specific_epithet=%s, infraspecific_epithet=%s, scientific_name=%s, scientific_name_authorship=%s, ' \
+               'identified_by=%s, year_identified=%s, month_identified=%s, day_identified=%s, type_status=%s, ' \
+               'recorded_by=%s, record_number=%s, field_number=%s, year=%s, month=%s, day=%s, event_time=%s, ' \
+               'continent_ocean=%s, country=%s, state_province=%s, county=%s, locality=%s, decimal_longitude=%s, ' \
+               'decimal_latitude=%s, verbatim_longitude=%s, verbatim_latitude=%s, coordinate_precision=%s, ' \
+               'bounding_box=%s, minimum_elevation_in_meters=%s, maximum_elevation_in_meters=%s, ' \
+               'minimum_depth_in_meters=%s, maximum_depth_in_meters=%s, sex=%s, preparation_type=%s, ' \
+               'individual_count=%s, previous_catalog_number=%s, relationship_type=%s, related_catalog_item=%s, ' \
+               'occurrence_remarks=%s, barcode=%s, imagecode=%s, geo_flag=%s)'
 
 
 # County is muncipio, condado
 class County(Base):
-    __tablename__ = "county"
+    __tablename__ = 'county'
 
-    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
-    county = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    uf = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
-    uf_name = sqlalchemy.Column(sqlalchemy.TEXT, nullable=True)
+    id = sa.Column(sa.Integer, primary_key=True)
+    county = sa.Column(sa.String, nullable=True)
+    uf = sa.Column(sa.String, nullable=True)
+    uf_name = sa.Column(sa.String, nullable=True)
 
     def __repr__(self):
-        return "County(id=%s, county=%s, county_normalized=%s, uf=%s, uf_normalized=%s, uf_name=%s, uf_name_normalized=%s)"
+        return 'County(id=%s, county=%s, county_normalized=%s, uf=%s, uf_normalized=%s, uf_name=%s, uf_name_normalized=%s)'
