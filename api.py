@@ -26,11 +26,16 @@ def get_county_name(json):
     raise KeyError('key nome not found')
 
 
+def return_nome_regiao(json):
+    return json['microrregiao']['mesorregiao']['UF'][
+        'regiao']['nome']
+
+
 def get_uf(json):
     if 'microrregiao' in json:
         if 'mesorregiao' in json['microrregiao']:
             if 'UF' in json['microrregiao']['mesorregiao']:
-                return return_sigla_estado(json), return_nome_estado(json)
+                return return_sigla_estado(json), return_nome_estado(json), return_nome_regiao(json)
             raise KeyError('key UF not found')
         raise KeyError('key mesorregiao not found')
     raise KeyError('key microrregiao not found')

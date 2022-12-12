@@ -27,7 +27,6 @@ def separate_images_per_threshold(dst):
 
     for d in list_dir:
         if len(os.listdir(d)) >= 5:
-            print(d, os.path.join(dst, '5', d.name))
             shutil.copytree(d, os.path.join(dst, '5', d.name))
         if len(os.listdir(d)) >= 10:
             shutil.copytree(d, os.path.join(dst, '10', d.name))
