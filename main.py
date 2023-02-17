@@ -26,10 +26,7 @@ def main():
     df_george = pd.read_csv(filename_george, sep=';', low_memory=False, skipinitialspace=True)
 
     create_table_if_not_exists(engine, 'county')
-    create_table_if_not_exists(engine, 'data_sp')
-    create_table_if_not_exists(engine, 'trusted_identifier')
-    create_table_if_not_exists(engine, 'data_trusted_identifier')
-
+    create_table_if_not_exists(engine, 'data')
 
     if table_is_empty(session, County):
         response = get_municipies()
