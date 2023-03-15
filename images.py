@@ -6,16 +6,24 @@ import shutil
 def copy_all_images(dst, list_images, query):
     path = os.path.join(dst, 'todos')
     pathlib.Path(path).mkdir(parents=True, exist_ok=True)
-    for barcode in query:
-        result = sorted([f for f in list_images if barcode[1] in str(f.stem)])
+    l = dict()
+    for q in query:
+        species = q[0]
+        barcode = q[1]
+        result = sorted([f for f in list_images if barcode in str(f.stem)])
         if len(result) > 0:
-            if not os.path.exists(os.path.join(path, barcode[0])):
-                pathlib.Path(os.path.join(path, barcode[0])).mkdir(parents=True, exist_ok=True)
+            if not species in l.keys():
+                l[species] = []
 
+            # if not os.path.exists(os.path.join(path, barcode[0])):
+            #     pathlib.Path(os.path.join(path, barcode[0])).mkdir(parents=True, exist_ok=True)
+            #
             result = [result[0]]
             for r in result:
-                dst_img = os.path.join(path, barcode[0], r.name)
-                shutil.copy(r, dst_img)
+                l[species].append(r.name)
+            # break
+    return l
+    print(l)
 
 
 def separate_images_per_threshold(dst):
@@ -40,7 +48,7 @@ def separate_images_per_threshold(dst):
             dst_img = str(path.resolve()).replace(str(path.name), 'f%s' % str(i))
             os.rename(path, dst_img)
 
-        with open('%s/%s/label2.txt' % (dst, threshold), mode='w') as file:
-            for info in list_info:
-                file.write(info)
-            file.close()
+        file = open('%s/%s/label2.txt' % (dst, threshold), mode='w')
+        for info in list_info:
+            file.write(info)
+        file.close()

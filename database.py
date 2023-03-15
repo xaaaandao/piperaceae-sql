@@ -11,12 +11,12 @@ from tables import get_base, DataSP, create_datasp, create_county, create_identi
     create_data_trusted_identifier
 from unaccent import unaccent
 
-user = os.environ['POSTGRE_USER']
-password = os.environ['POSTGRE_PASSWORD']
+# user = os.environ['POSTGRE_USER']
+# password = os.environ['POSTGRE_PASSWORD']
 cfg = {
     'host': '192.168.0.144',
-    'user': user,
-    'password': password,
+    'user': os.environ['POSTGRE_USER'],
+    'password': os.environ['POSTGRE_PASSWORD'],
     'port': '5432',
     'database': 'herbario'
 }
@@ -52,8 +52,8 @@ def list_ilike(attribute, list_of_values):
     return [attribute.ilike(value) for value in list_of_values]
 
 
-def create_table_if_not_exists(engine, table_name):
-    if not engine.has_table(table_name, schema=cfg['database']):
+def create_table_if_not_exists(engine, table):
+    if not table.__tablename__ in sa.inspect(engine).get_table_names():
         get_base().metadata.create_all(engine)
 
 

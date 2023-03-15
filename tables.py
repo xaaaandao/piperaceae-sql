@@ -97,7 +97,7 @@ def get_base():
 
 
 class DataSP(Base):
-    __tablename__ = 'data'
+    __tablename__ = 'data_sp'
 
     seq = sa.Column(sa.BigInteger, primary_key=True)
     modified = sa.Column(sa.DateTime, nullable=True)
