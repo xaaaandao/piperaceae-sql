@@ -1,5 +1,6 @@
 import sqlalchemy as sa
 import sqlalchemy.ext.declarative
+import sqlalchemy.orm
 import string
 
 from sqlalchemy_utils.types.ts_vector import TSVectorType
@@ -90,6 +91,10 @@ def create_county(json):
 
 def create_identifier(full_name, searched_name, value_founded, trusted=False):
     return TrustedIdentifier(name=full_name, searched_name=searched_name, value_founded=value_founded, trusted=trusted)
+
+
+def create_info_image(color_mode, image_size, path_image, seq):
+    return InfoImage(path_image=path_image, color_mode=color_mode, image_size=image_size, seq_id=seq)
 
 
 def get_base():
@@ -254,7 +259,7 @@ class DataTrustedIdentifier(Base):
     george = sa.Column(sa.Boolean, nullable=True)
     country_trusted = sa.Column(sa.String, nullable=True)
     state_trusted = sa.Column(sa.String, nullable=True)
-    county_trusted = sa.Column(sa.String, nullable=True)
+    info_image = sqlalchemy.orm.relationship('InfoImage')
 
     def __repr__(self):
         return 'DataTrustedIdentifier(seq=%s, modified=%s, institution_code=%s, collection_code=%s, catalog_number=%s, ' \
@@ -269,3 +274,16 @@ class DataTrustedIdentifier(Base):
                'individual_count=%s, previous_catalog_number=%s, relationship_type=%s, related_catalog_item=%s, ' \
                'occurrence_remarks=%s, barcode=%s, imagecode=%s, geo_flag=%s, country_trusted=%s, state_trusted=%s,' \
                'county=%s )'
+
+
+class InfoImage(Base):
+    __tablename__ = 'info_image'
+
+    id = sa.Column(sa.BigInteger, primary_key=True, autoincrement=True)
+    path_image = sa.Column(sa.String, nullable=True)
+    color_mode = sa.Column(sa.String, nullable=True)
+    image_size = sa.Column(sa.String, nullable=True)
+    seq_id = sa.Column(sa.Integer, sa.ForeignKey('data_trusted_identifier.seq'))
+
+    def __repr__(self):
+        return 'InfoImage(path_image=%s, color_mode=%s, image_size=%s, seq=%s)'

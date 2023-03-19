@@ -55,6 +55,7 @@ def list_ilike(attribute, list_of_values):
 def create_table_if_not_exists(engine, table):
     if not table.__tablename__ in sa.inspect(engine).get_table_names():
         get_base().metadata.create_all(engine)
+        print('create table: %s' % text_bold(table.__tablename__))
 
 
 def table_is_empty(session, table):
@@ -191,3 +192,6 @@ def update_country_trusted(list_county, list_state, list_uf, session):
 
 def has_state_in_locality(list_state_like):
     return unaccent(sa.func.lower(DataTrustedIdentifier.locality)).like(sa.func.any_(list_state_like))
+
+def text_bold(string):
+    return '\033[1m' + string + '\033[0m'
