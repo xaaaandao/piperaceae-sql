@@ -11,8 +11,6 @@ from tables import get_base, DataSP, create_datasp, create_county, create_identi
     create_data_trusted_identifier
 from unaccent import unaccent
 
-# user = os.environ['POSTGRE_USER']
-# password = os.environ['POSTGRE_PASSWORD']
 cfg = {
     'host': '192.168.0.144',
     'user': os.environ['POSTGRE_USER'],
@@ -22,10 +20,11 @@ cfg = {
 }
 
 
-def connect():
+def connect(echo=True):
     try:
         engine = sqlalchemy.create_engine(
-            f"postgresql+psycopg2://{cfg['user']}:{cfg['password']}@{cfg['host']}:{cfg['port']}/{cfg['database']}", echo=True,
+            'postgresql+psycopg2://%s:%s@%s:%s/%s' % (
+            cfg['user'], cfg['password'], cfg['host'], cfg['port'], cfg['database']), echo=echo,
             pool_pre_ping=True)
         Session = sqlalchemy.orm.sessionmaker(bind=engine)
         Session.configure(bind=engine)
@@ -33,7 +32,7 @@ def connect():
         if engine.connect():
             return engine, session
     except Exception as e:
-        print(f"problems with host %s (%s)" % (cfg['host'], e))
+        print('problems with host %s (%s)' % (cfg['host'], e))
 
 
 def make_operation(session):
@@ -44,6 +43,8 @@ def make_operation(session):
         session.rollback()
         print(e)
         raise
+
+
 # finally:
 #     session.close()
 
@@ -53,9 +54,15 @@ def list_ilike(attribute, list_of_values):
 
 
 def create_table_if_not_exists(engine, table):
-    if not table.__tablename__ in sa.inspect(engine).get_table_names():
-        get_base().metadata.create_all(engine)
-        print('create table: %s' % text_bold(table.__tablename__))
+    table_name = table.__tablename__
+    if not table_name in show_tables(engine):
+        base = get_base()
+        base.metadata.create_all(engine)
+        print('create table: %s' % table.__tablename__)
+
+
+def show_tables(engine):
+    return sa.inspect(engine).get_table_names()
 
 
 def table_is_empty(session, table):
@@ -115,13 +122,13 @@ def query_barcode(columns, list_values_founded, query_country, query_county, que
 
 def find_and_replace_broken_characters(attribute, session, special_character):
     replace_func = sa.func.replace(attribute, special_character['find'], special_character['replace'])
-    session.query(DataTrustedIdentifier)\
+    session.query(DataTrustedIdentifier) \
         .update(values={attribute: replace_func}, synchronize_session=False)
     make_operation(session)
 
 
 def get_all_records_of_trusted_identifier(list_diff_identifier, session):
-    return session.query(DataSP)\
+    return session.query(DataSP) \
         .filter(DataSP.identified_by.in_(list_diff_identifier))
 
 
@@ -132,35 +139,32 @@ def insert_new_data_trusted_identifier(session, query):
 
 
 def get_all_identifiers_ilike(identifier, session):
-    return session.query(DataSP)\
-        .filter(DataSP.identified_by.ilike('%{}%'.format(identifier)))\
-        .distinct()\
-        .all()
+    return
 
 
 def get_all_records_with_diff_brasil(list_diff_br, session):
-    return session.query(DataTrustedIdentifier)\
-        .filter(DataTrustedIdentifier.country.in_(list_diff_br))\
+    return session.query(DataTrustedIdentifier) \
+        .filter(DataTrustedIdentifier.country.in_(list_diff_br)) \
         .all()
 
 
 def update_country_trusted_based_original_field(list_diff_br, session):
-    session.query(DataTrustedIdentifier)\
-        .filter(DataTrustedIdentifier.country.in_(list_diff_br))\
+    session.query(DataTrustedIdentifier) \
+        .filter(DataTrustedIdentifier.country.in_(list_diff_br)) \
         .update({'country_trusted': 'Brasil'}, synchronize_session=False)
     make_operation(session)
 
 
 def has_brasil_in_country_trusted(session):
-    return session.query(DataTrustedIdentifier)\
-               .filter(DataTrustedIdentifier.country_trusted == 'Brasil')\
-               .count() == 0
+    return session.query(DataTrustedIdentifier) \
+        .filter(DataTrustedIdentifier.country_trusted == 'Brasil') \
+        .count() == 0
 
 
 def get_all_records_with_brasil_in_country_trusted(session):
-    return session.query(DataTrustedIdentifier)\
-        .filter(DataTrustedIdentifier.country_trusted == 'Brasil')\
-        .distinct()\
+    return session.query(DataTrustedIdentifier) \
+        .filter(DataTrustedIdentifier.country_trusted == 'Brasil') \
+        .distinct() \
         .all()
 
 
@@ -182,10 +186,10 @@ def county_in_list_county(list_county):
 
 
 def update_country_trusted(list_county, list_state, list_uf, session):
-    session.query(DataTrustedIdentifier)\
+    session.query(DataTrustedIdentifier) \
         .filter(and_(DataTrustedIdentifier.country_trusted.is_(None),
-                    state_province_in_list_uf_or_list_state(list_state, list_uf),
-                    county_in_list_county(list_county)))\
+                     state_province_in_list_uf_or_list_state(list_state, list_uf),
+                     county_in_list_county(list_county))) \
         .update({'country_trusted': 'Brasil'}, synchronize_session=False)
     make_operation(session)
 
@@ -193,5 +197,14 @@ def update_country_trusted(list_county, list_state, list_uf, session):
 def has_state_in_locality(list_state_like):
     return unaccent(sa.func.lower(DataTrustedIdentifier.locality)).like(sa.func.any_(list_state_like))
 
+
 def text_bold(string):
     return '\033[1m' + string + '\033[0m'
+
+
+def execute_query(session, query):
+    try:
+        return session.execute(query).all()
+    except:
+        session.commit()
+        session.flush()

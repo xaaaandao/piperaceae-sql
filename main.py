@@ -20,7 +20,7 @@ def main():
     engine, session = connect()
 
     filename_sp = 'csv/original.csv'
-    filename_george = 'csv/dados-george.csv'
+    filename_george = 'csv/george_data.csv'
 
     df_sp = pd.read_csv(filename_sp, sep=';', low_memory=False, skipinitialspace=True, encoding='utf-8-sig')
     df_george = pd.read_csv(filename_george, sep=';', low_memory=False, skipinitialspace=True)

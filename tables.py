@@ -1,14 +1,10 @@
 import sqlalchemy as sa
 import sqlalchemy.ext.declarative
 import sqlalchemy.orm
-import string
-
-from sqlalchemy_utils.types.ts_vector import TSVectorType
 
 from api import get_id, get_county_name, get_uf
 
 Base = sa.ext.declarative.declarative_base()
-
 
 def create_datasp(info):
     return DataSP(seq=info['seq'],

@@ -3,9 +3,9 @@ import requests
 
 def get_municipies():
     try:
-        return requests.get("https://servicodados.ibge.gov.br/api/v1/localidades/municipios")
+        return requests.get('https://servicodados.ibge.gov.br/api/v1/localidades/municipios')
     except Exception as e:
-        raise print(f"error: {e}")
+        raise print('error: %s' % e)
 
 
 def get_key(json, key):
@@ -26,7 +26,7 @@ def get_county_name(json):
     raise KeyError('key nome not found')
 
 
-def return_nome_regiao(json):
+def get_name_region(json):
     return json['microrregiao']['mesorregiao']['UF'][
         'regiao']['nome']
 
@@ -35,16 +35,15 @@ def get_uf(json):
     if 'microrregiao' in json:
         if 'mesorregiao' in json['microrregiao']:
             if 'UF' in json['microrregiao']['mesorregiao']:
-                return return_sigla_estado(json), return_nome_estado(json), return_nome_regiao(json)
+                return get_acronym_state(json), get_name_state(json), get_name_region(json)
             raise KeyError('key UF not found')
         raise KeyError('key mesorregiao not found')
     raise KeyError('key microrregiao not found')
 
 
-def return_nome_estado(json):
-    return json['microrregiao']['mesorregiao']['UF'][
-        'nome']
+def get_name_state(json):
+    return json['microrregiao']['mesorregiao']['UF']['nome']
 
 
-def return_sigla_estado(json):
+def get_acronym_state(json):
     return json['microrregiao']['mesorregiao']['UF']['sigla']
