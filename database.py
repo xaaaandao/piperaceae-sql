@@ -195,7 +195,7 @@ def update_country_trusted(list_county, list_state, list_uf, session):
 
 
 def has_state_in_locality(list_state_like):
-    return unaccent(sa.func.lower(DataTrustedIdentifier.locality)).like(sa.func.any_(list_state_like))
+    return
 
 
 def text_bold(string):
