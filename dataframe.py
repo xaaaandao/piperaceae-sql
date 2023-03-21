@@ -14,8 +14,8 @@ def convert_header_to_snake_case(dataframe):
             get_columns_dataframe(dataframe)}
 
 
-def change_header(dataframe):
-    dataframe.rename(columns=convert_header_to_snake_case(dataframe), inplace=True)
+def rename_header_dataframe(df):
+    df.rename(columns=convert_header_to_snake_case(df), inplace=True)
 
 
 def get_columns_numeric(dataframe, table):
@@ -60,7 +60,7 @@ def replace_values_not_numeric(dataframe):
 
 
 def preprocess(dataframe):
-    change_header(dataframe)
+    rename_header_dataframe(dataframe)
     return replace_nan_to_null(replace_values_not_numeric(dataframe))
 
 

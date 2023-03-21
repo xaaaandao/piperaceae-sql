@@ -1,11 +1,11 @@
 import requests
 
 
-def get_municipies():
+def get_data_api():
     try:
         return requests.get('https://servicodados.ibge.gov.br/api/v1/localidades/municipios')
-    except Exception as e:
-        raise print('error: %s' % e)
+    except Exception:
+        raise requests.exceptions.RequestException('error in request')
 
 
 def get_key(json, key):
