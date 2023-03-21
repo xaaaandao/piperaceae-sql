@@ -1,5 +1,5 @@
 result/
-dataset_george
+.idea/sonarlint/
 *.pyc
 *.pb
 *.xml
