@@ -7,8 +7,7 @@ import sqlalchemy.orm
 import sqlalchemy.schema
 from sqlalchemy import and_, or_
 
-from tables import get_base, DataSP, create_datasp, create_county, create_identifier, DataTrustedIdentifier, \
-    create_data_trusted_identifier
+from tables import get_base, DataTrustedIdentifier
 from unaccent import unaccent
 
 cfg = {
@@ -24,20 +23,19 @@ def connect(echo=True):
     try:
         engine = sqlalchemy.create_engine(
             'postgresql+psycopg2://%s:%s@%s:%s/%s' % (
-                cfg['user'], cfg['password'], cfg['host'], cfg['port'], cfg['database']), echo=echo,
-            pool_pre_ping=True)
-        Session = sqlalchemy.orm.sessionmaker(bind=engine)
-        Session.configure(bind=engine)
-        session = Session()
+                cfg['user'], cfg['password'], cfg['host'], cfg['port'], cfg['database']), echo=echo, pool_pre_ping=True)
+        session = sqlalchemy.orm.sessionmaker(bind=engine)
+        session.configure(bind=engine)
+        db = session()
         if engine.connect():
-            return engine, session
+            return engine, db
     except Exception as e:
         print('problems with host %s (%s)' % (cfg['host'], e))
 
 
 def create_table_if_not_exists(engine, table):
     table_name = table.__tablename__
-    if not table_name in show_tables(engine):
+    if table_name != show_tables(engine):
         base = get_base()
         base.metadata.create_all(engine)
         print('create table: %s' % table.__tablename__)
