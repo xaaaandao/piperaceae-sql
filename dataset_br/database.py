@@ -50,7 +50,6 @@ def get_records_group_by_level(columns, condition, level, minimum_image, session
         .order_by(level) \
         .having(sa.func.count(level) >= minimum_image) \
         .all()
-    print('count of species: %d' % len(records))
 
     return records
 
@@ -80,4 +79,5 @@ def filter_records(color, image_size, minimum_image, records, session):
             if len(np.unique(list_only_one_path)) >= minimum_image:
                 list_level_name.append(level)
                 list_path_images.append(np.unique(list_only_one_path).tolist())
+
     return list_level_name, list_path_images

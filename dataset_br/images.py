@@ -24,6 +24,7 @@ def remove_images_invalid(list_level_name, list_images_invalid, list_path_images
 
         list_path_correct.append(matching)
         list_count_path.append(len(matching))
+
     return list_count_path, list_path_images
 
 
