@@ -6,7 +6,7 @@ import re
 
 import pandas as pd
 
-from tables import DataSP
+from models import DataSP
 
 
 def convert_header_to_snake_case(dataframe):

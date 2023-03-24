@@ -1,34 +1,64 @@
 import itertools
-import numpy as np
 import os
-import pandas as pd
-import sqlalchemy as sa
 
-from sqlalchemy.orm import sessionmaker
-from tables import DataTrustedIdentifier, InfoImage
+import numpy as np
+import pandas as pd
+import sqlalchemy
+import sqlalchemy as sa
+import sqlalchemy.ext.declarative
+import sqlalchemy.orm
+import sqlalchemy.schema
+
+from images import get_url_image
+from models import get_base, DataTrustedIdentifier, InfoImage
 from unaccent import unaccent
 
 cfg = {
     'host': '192.168.0.144',
     'user': os.environ['POSTGRE_USER'],
-    'password': os.environ['POSTGRE_PASSWORD'],
-    'port': '5432',
-    'database': 'herbario'
+    'password': os.environ['POSTGRE_PASSWORD']
 }
 
 
 def connect(echo=True):
     try:
-        engine = sa.create_engine(
-            'postgresql+psycopg2://%s:%s@%s:%s/%s' % (
-                cfg['user'], cfg['password'], cfg['host'], cfg['port'], cfg['database']), echo=echo, pool_pre_ping=True)
-        session = sessionmaker(bind=engine)
+        url = 'postgresql+psycopg2://%s:%s@%s:5432/herbario' % (cfg['user'], cfg['password'], cfg['host'])
+        engine = sa.create_engine(url, echo=echo, pool_pre_ping=True)
+        session = sqlalchemy.orm.sessionmaker(bind=engine)
         session.configure(bind=engine)
         db = session()
         if engine.connect():
             return engine, db
     except Exception as e:
         print('problems with host %s (%s)' % (cfg['host'], e))
+
+
+def table_exists(engine, table_name):
+    return True if table_name in show_tables(engine) else False
+
+
+def create_table(engine, table):
+    table_name = table.__tablename__
+
+    if table_exists(engine, table_name):
+        raise RuntimeError('table %s exists' % table_name)
+
+    base = get_base()
+    base.metadata.create_all(engine)
+    print('create table: %s' % table.__tablename__)
+
+
+def show_tables(engine):
+    return sa.inspect(engine).get_table_names()
+
+
+def update_country_trusted(session, query):
+    uf_unaccented_lower, state_unaccented_lower, county_unaccented_lower = get_list_uf_state_county(query)
+    condition = sa.and_(DataTrustedIdentifier.country_trusted.is_(None),
+                        sa.or_(uf_unaccented_lower, state_unaccented_lower))
+    session.query(DataTrustedIdentifier) \
+        .filter(condition) \
+        .update({'country_trusted': 'Brasil'}, synchronize_session=False)
 
 
 def get_list_uf_state_county(query):
@@ -86,20 +116,19 @@ def filter_records(color, image_size, minimum_image, records, session):
 
 
 def get_informations_images(list_path_images, session):
-    list_path_images =  list(itertools.chain(*list_path_images))
-    columns = [DataTrustedIdentifier.seq, DataTrustedIdentifier.genus, DataTrustedIdentifier.specific_epithet, DataTrustedIdentifier.catalog_number, DataTrustedIdentifier.barcode, InfoImage.path_image, DataTrustedIdentifier.institution_code, DataTrustedIdentifier.collection_code]
+    list_path_images = list(itertools.chain(*list_path_images))
+    columns = [DataTrustedIdentifier.seq, DataTrustedIdentifier.genus, DataTrustedIdentifier.specific_epithet,
+               DataTrustedIdentifier.catalog_number, DataTrustedIdentifier.barcode, InfoImage.path_image,
+               DataTrustedIdentifier.institution_code, DataTrustedIdentifier.collection_code]
     condition = sa.and_(InfoImage.path_image.in_(list_path_images),
-                        DataTrustedIdentifier.seq==InfoImage.seq_id)
-    query = session.query(*columns)\
-            .filter(condition)\
-            .all()
+                        DataTrustedIdentifier.seq == InfoImage.seq_id)
+    query = session.query(*columns) \
+        .filter(condition) \
+        .all()
 
-
-    data = [(q.seq, q.genus, q.specific_epithet, q.catalog_number, q.barcode, q.path_image, q.institution_code, q.collection_code, get_url_image(q.barcode, q.collection_code)) for q in query]
-    columns = ['seq', 'genus', 'specific_epithet', 'catalog_number', 'barcode', 'path_image', 'institution_code', 'collection_code', 'url']
+    data = [(q.seq, q.genus, q.specific_epithet, q.catalog_number, q.barcode, q.path_image, q.institution_code,
+             q.collection_code, get_url_image(q.barcode, q.collection_code)) for q in query]
+    columns = ['seq', 'genus', 'specific_epithet', 'catalog_number', 'barcode', 'path_image', 'institution_code',
+               'collection_code', 'url']
     df = pd.DataFrame(data, columns=columns)
     return df
-
-
-def get_url_image(barcode, herbarium, height=5000, width=5000):
-    return 'https://specieslink.net/search/util/osd-dezoomify?imagecode=%s&path=herbaria/%s/%s&width=%s&height=%s' % (barcode, herbarium, barcode, str(width), str(height))
