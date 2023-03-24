@@ -70,3 +70,23 @@ def save_metadata(color, image_size, list_level_name, list_path_images, list_cou
     display('image informations')
     display('save csv in %s' % filename_csv)
     display(df.head(3))
+
+
+def separate_and_copy_images(condition, level, list_color, list_images_invalid, list_minimum_image, list_image_size, path_out, session):
+    for color in list_color:
+        for image_size in list_image_size:
+            for minimum_image in list_minimum_image:
+                records = db.get_records_group_by_level(condition, level, minimum_image, session)
+                list_level_name, list_path_images = db.filter_records(color, image_size, minimum_image, records, session)
+
+                if len(list_path_images) > 0:
+                    list_count_path, list_path_images = remove_images_invalid(list_level_name, list_images_invalid, list_path_images)
+
+                    path_out = os.path.join(path_out, color.upper(), image_size, str(minimum_image))
+
+                    if not os.path.exists(path_out):
+                        os.makedirs(path_out)
+
+                    list_path_dst = copy_images(list_level_name, list_path_images, path_out)
+
+                    save_metadata(color, image_size, list_level_name, list_path_images, list_count_path, list_path_dst, minimum_image, path_out, session)

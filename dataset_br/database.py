@@ -43,7 +43,8 @@ def get_list_uf_state_county(query):
     return uf_unaccented_lower, state_unaccented_lower, county_unaccented_lower
 
 
-def get_records_group_by_level(columns, condition, level, minimum_image, session):
+def get_records_group_by_level(condition, level, minimum_image, session):
+    columns = [level, sa.func.array_agg(DataTrustedIdentifier.seq)]
     records = session.query(*columns) \
         .filter(condition) \
         .distinct() \
