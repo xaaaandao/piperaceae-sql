@@ -1,7 +1,9 @@
+import database as db
 import os
+import pandas as pd
 import shutil
-import tqdm
 
+from IPython.display import display
 
 def get_list_of_images_invalid():
     return {
@@ -28,7 +30,7 @@ def remove_images_invalid(list_level_name, list_images_invalid, list_path_images
     return list_count_path, list_path_images
 
 
-def copy_images(color, image_size, list_level_name, list_path_images, minimum_image, path_out):
+def copy_images(list_level_name, list_path_images, path_out):
     list_path_dst = []
 
     for i, species_and_paths in enumerate(zip(list_level_name, list_path_images), start=1):
@@ -45,3 +47,26 @@ def copy_images(color, image_size, list_level_name, list_path_images, minimum_im
         list_path_dst.append(path_final)
 
     return list_path_dst
+
+
+def save_metadata(color, image_size, list_level_name, list_path_images, list_count_path, list_path_dst, minimum_image, path_out, session):
+    df = pd.DataFrame({
+        'species': list_level_name,
+        'paths': list_path_images,
+        'count': list_count_path,
+        'dst': list_path_dst
+    })
+    display('color: %s image_size: %s minimum_image: %d' % (color, image_size, minimum_image))
+    display('len(list_level_name): %d len(paths_images): %d' % (len(list_level_name), df['count'].sum()))
+    filename_csv = os.path.join(path_out, 'dataset_informations.csv')
+    display('save csv in %s' % filename_csv)
+    df.to_csv(filename_csv, sep=';', na_rep=None, encoding='utf-8', lineterminator='\n', index=None)
+    display(df.head(3))
+    display('total of images %d' % df['count'].sum())
+
+    df = db.get_informations_images(list_path_images, session)
+    filename_csv = os.path.join(path_out, 'image_informations.csv')
+    df.to_csv(filename_csv, sep=';', na_rep=None, encoding='utf-8', lineterminator='\n', index=None)
+    display('image informations')
+    display('save csv in %s' % filename_csv)
+    display(df.head(3))
