@@ -10,7 +10,7 @@ import sqlalchemy.orm
 import sqlalchemy.schema
 
 from images import get_url_image
-from models import get_base, DataTrustedIdentifier, InfoImage
+from models import get_base, DataTrustedIdentifier, Image
 from unaccent import unaccent
 
 cfg = {
@@ -40,12 +40,10 @@ def table_exists(engine, table_name):
 def create_table(engine, table):
     table_name = table.__tablename__
 
-    if table_exists(engine, table_name):
-        raise RuntimeError('table %s exists' % table_name)
-
-    base = get_base()
-    base.metadata.create_all(engine)
-    print('create table: %s' % table.__tablename__)
+    if not table_exists(engine, table_name):
+        base = get_base()
+        base.metadata.tables[table_name].create(bind=engine)
+        print('create table: %s' % table.__tablename__)
 
 
 def show_tables(engine):
@@ -86,17 +84,18 @@ def get_records_group_by_level(condition, level, minimum_image, session):
     return records
 
 
-def filter_records(color, image_size, minimum_image, records, session):
+def filter_records(color, minimum_image, records, session, height, width):
     list_level_name = []
     list_path_images = []
     for i, q in enumerate(records):
         level = q[0]
         list_seq = q[1]
-        query = session.query(sa.func.array_agg(sa.distinct(InfoImage.path_image))) \
-            .filter(sa.and_(InfoImage.seq_id.in_(list_seq),
-                            InfoImage.image_size == image_size,
-                            InfoImage.color_mode == color)) \
-            .group_by(InfoImage.seq_id) \
+        query = session.query(sa.func.array_agg(sa.distinct(Image.path))) \
+            .filter(sa.and_(Image.seq_id.in_(list_seq),
+                            Image.height == height,
+                            Image.width == width,
+                            Image.color_mode == color)) \
+            .group_by(Image.seq_id) \
             .all()
 
         l = list(itertools.chain(*query))  # "remove of tuples"
@@ -118,17 +117,21 @@ def filter_records(color, image_size, minimum_image, records, session):
 def get_informations_images(list_path_images, session):
     list_path_images = list(itertools.chain(*list_path_images))
     columns = [DataTrustedIdentifier.seq, DataTrustedIdentifier.genus, DataTrustedIdentifier.specific_epithet,
-               DataTrustedIdentifier.catalog_number, DataTrustedIdentifier.barcode, InfoImage.path_image,
+               DataTrustedIdentifier.catalog_number, DataTrustedIdentifier.barcode, Image.path,
                DataTrustedIdentifier.institution_code, DataTrustedIdentifier.collection_code]
-    condition = sa.and_(InfoImage.path_image.in_(list_path_images),
-                        DataTrustedIdentifier.seq == InfoImage.seq_id)
+    condition = sa.and_(Image.path.in_(list_path_images),
+                        DataTrustedIdentifier.seq == Image.seq_id)
     query = session.query(*columns) \
         .filter(condition) \
         .all()
 
-    data = [(q.seq, q.genus, q.specific_epithet, q.catalog_number, q.barcode, q.path_image, q.institution_code,
+    data = [(q.seq, q.genus, q.specific_epithet, q.catalog_number, q.barcode, q.path, q.institution_code,
              q.collection_code, get_url_image(q.barcode, q.collection_code)) for q in query]
     columns = ['seq', 'genus', 'specific_epithet', 'catalog_number', 'barcode', 'path_image', 'institution_code',
                'collection_code', 'url']
     df = pd.DataFrame(data, columns=columns)
     return df
+
+
+def get_columns_table(table):
+    return table.__table__.columns
