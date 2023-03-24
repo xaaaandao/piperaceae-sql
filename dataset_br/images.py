@@ -29,10 +29,7 @@ def remove_images_invalid(list_level_name, list_images_invalid, list_path_images
 
 
 def copy_images(color, image_size, list_level_name, list_path_images, minimum_image, path_out):
-    path_out = os.path.join(path_out, color.upper(), image_size, str(minimum_image))
-    print(path_out)
-    if not os.path.exists(path_out):
-        os.makedirs(path_out)
+    list_path_dst = []
 
     for i, species_and_paths in enumerate(zip(list_level_name, list_path_images), start=1):
         species = species_and_paths[0]
@@ -44,3 +41,7 @@ def copy_images(color, image_size, list_level_name, list_path_images, minimum_im
 
         for p in list_p:
             shutil.copy(p, path_final)
+
+        list_path_dst.append(path_final)
+
+    return list_path_dst
