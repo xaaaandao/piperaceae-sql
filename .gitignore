@@ -1,6 +1,0 @@
-result/
-.idea/sonarlint/
-*.pyc
-*.pb
-*.xml
-*.iml
