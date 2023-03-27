@@ -213,6 +213,15 @@ class DataTrustedIdentifier(Base):
     george = sa.Column(sa.Boolean, nullable=True)
     country_trusted = sa.Column(sa.String, nullable=True)
     state_trusted = sa.Column(sa.String, nullable=True)
+    kingdom_trusted = sa.Column(sa.String, nullable=True)
+    phylum_trusted = sa.Column(sa.String, nullable=True)
+    classe_trusted = sa.Column(sa.String, nullable=True)
+    order_trusted = sa.Column(sa.String, nullable=True)
+    family_trusted = sa.Column(sa.String, nullable=True)
+    genus_trusted = sa.Column(sa.String, nullable=True)
+    specific_epithet_trusted = sa.Column(sa.String, nullable=True)
+    infraspecific_epithet_trusted = sa.Column(sa.String, nullable=True)
+    scientific_name_authorship_trusted = sa.Column(sa.String, nullable=True)
     info_image = sqlalchemy.orm.relationship('Image', backref='dti')
 
     def __repr__(self):
@@ -242,3 +251,31 @@ class Image(Base):
 
     def __repr__(self):
         return 'Image(path=%s, color_mode=%s, width=%s, height=%s, seq=%s)'
+
+class CorrectLevel(Base):
+    __tablename__ = 'correct_level'
+
+    id = sa.Column(sa.BigInteger, primary_key=True, autoincrement=True)
+    kingdom_old = sa.Column(sa.String, nullable=True)
+    phylum_old = sa.Column(sa.String, nullable=True)
+    classe_old = sa.Column(sa.String, nullable=True)
+    order_old = sa.Column(sa.String, nullable=True)
+    family_old = sa.Column(sa.String, nullable=True)
+    genus_old = sa.Column(sa.String, nullable=True)
+    specific_epithet_old = sa.Column(sa.String, nullable=True)
+    infraspecific_epithet_old = sa.Column(sa.String, nullable=True)
+    scientific_name_authorship_old = sa.Column(sa.String, nullable=True)
+    kingdom_new = sa.Column(sa.String, nullable=True)
+    phylum_new = sa.Column(sa.String, nullable=True)
+    classe_new = sa.Column(sa.String, nullable=True)
+    order_new = sa.Column(sa.String, nullable=True)
+    family_new = sa.Column(sa.String, nullable=True)
+    genus_new = sa.Column(sa.String, nullable=True)
+    specific_epithet_new = sa.Column(sa.String, nullable=True)
+    infraspecific_epithet_new = sa.Column(sa.String, nullable=True)
+    scientific_name_authorship_new = sa.Column(sa.String, nullable=True)
+    def __repr__(self):
+        return 'CorrectLevel(genus_old=%s, specific_epithet_old=%s, infraspecific_epithet_old=%s, scientific_name_authorship_old=%s, genus_new=%s, specific_epithet_new=%s, infraspecific_epithet_new=%s, scientific_name_authorship_new=%s)'
+
+    def __repr__(self):
+        return 'CorrectLevel(old_genus=%s, new_genus=%s)'

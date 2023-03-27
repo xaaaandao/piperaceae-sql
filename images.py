@@ -78,8 +78,7 @@ def save_metadata(color, image_size, list_level_name, list_path_images, list_cou
     display(df.head(3))
 
 
-def separate_and_copy_images(condition, level, list_color, list_images_invalid, list_minimum_image, list_image_size,
-                             path_out, session):
+def separate_and_copy_images(condition, level, list_color, list_images_invalid, list_minimum_image, list_image_size, path_out, session):
     for color in list_color:
         for image_size in list_image_size:
             for minimum_image in list_minimum_image:
