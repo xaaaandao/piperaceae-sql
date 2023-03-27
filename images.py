@@ -83,7 +83,7 @@ def separate_and_copy_images(condition, level, list_color, list_images_invalid, 
         for image_size in list_image_size:
             for minimum_image in list_minimum_image:
                 records = db.get_records_group_by_level(condition, level, minimum_image, session)
-                list_level_name, list_path_images = db.filter_records(color, image_size, minimum_image, records, session)
+                list_level_name, list_path_images = db.filter_records(color, (int(image_size), int(image_size)), minimum_image, records, session)
 
                 if len(list_path_images) > 0:
                     list_count_path, list_path_images = remove_images_invalid(list_level_name, list_images_invalid,

@@ -47,8 +47,8 @@ def create_identifier(full_name, searched_name, value_founded, trusted=False):
     return TrustedIdentifier(name=full_name, searched_name=searched_name, value_founded=value_founded, trusted=trusted)
 
 
-def create_info_image(color_mode, image_size, path_image, seq):
-    return Image(path_image=path_image, color_mode=color_mode, image_size=image_size, seq_id=seq)
+def create_info_image(color_mode, path, seq, height, width):
+    return Image(color_mode=color_mode, path=path, seq_id=seq, height=height, width=width)
 
 
 def get_base():
@@ -249,5 +249,5 @@ class Image(Base):
     path = sa.Column(sa.String, nullable=True)
     seq_id = sa.Column(sa.Integer, sa.ForeignKey('data_trusted_identifier.seq'))
 
-    def __repr__(self):
-        return 'Image(path=%s, color_mode=%s, width=%s, height=%s, seq=%s)'
+    # def __repr__(self):
+    #     return 'Image(path=%s, color_mode=%s, seq_id=%d, height=%d, width=%d)'

@@ -84,7 +84,7 @@ def get_records_group_by_level(condition, level, minimum_image, session):
     return records
 
 
-def filter_records(color, minimum_image, records, session, height, width):
+def filter_records(color, image_size, minimum_image, records, session):
     list_level_name = []
     list_path_images = []
     for i, q in enumerate(records):
@@ -92,8 +92,8 @@ def filter_records(color, minimum_image, records, session, height, width):
         list_seq = q[1]
         query = session.query(sa.func.array_agg(sa.distinct(Image.path))) \
             .filter(sa.and_(Image.seq_id.in_(list_seq),
-                            Image.height == height,
-                            Image.width == width,
+                            Image.height.__eq__(image_size[0]),
+                            Image.width.__eq__(image_size[1]),
                             Image.color_mode == color)) \
             .group_by(Image.seq_id) \
             .all()
