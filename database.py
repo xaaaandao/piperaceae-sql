@@ -116,7 +116,7 @@ def filter_records(color, image_size, minimum_image, records, session):
 
 def get_informations_images(list_path_images, session):
     list_path_images = list(itertools.chain(*list_path_images))
-    columns = [DataTrustedIdentifier.seq, DataTrustedIdentifier.genus, DataTrustedIdentifier.specific_epithet,
+    columns = [DataTrustedIdentifier.seq, DataTrustedIdentifier.genus_trusted, DataTrustedIdentifier.specific_epithet_trusted,
                DataTrustedIdentifier.catalog_number, DataTrustedIdentifier.barcode, Image.path,
                DataTrustedIdentifier.institution_code, DataTrustedIdentifier.collection_code]
     condition = sa.and_(Image.path.in_(list_path_images),
@@ -125,7 +125,7 @@ def get_informations_images(list_path_images, session):
         .filter(condition) \
         .all()
 
-    data = [(q.seq, q.genus, q.specific_epithet, q.catalog_number, q.barcode, q.path, q.institution_code,
+    data = [(q.seq, q.genus_trusted, q.specific_epithet_trusted, q.catalog_number, q.barcode, q.path, q.institution_code,
              q.collection_code, get_url_image(q.barcode, q.collection_code)) for q in query]
     columns = ['seq', 'genus', 'specific_epithet', 'catalog_number', 'barcode', 'path_image', 'institution_code',
                'collection_code', 'url']

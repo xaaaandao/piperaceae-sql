@@ -32,7 +32,7 @@ def remove_images_invalid(list_level_name, list_images_invalid, list_path_images
         list_path_correct.append(matching)
         list_count_path.append(len(matching))
 
-    return list_count_path, list_path_images
+    return list_count_path, list_path_correct
 
 
 def copy_images(list_level_name, list_path_images, path_out):
@@ -46,8 +46,8 @@ def copy_images(list_level_name, list_path_images, path_out):
         if not os.path.exists(path_final):
             os.makedirs(path_final)
 
-        for p in list_p:
-            shutil.copy(p, path_final)
+        # for p in list_p:
+        #     shutil.copy(p, path_final)
 
         list_path_dst.append(path_final)
 
@@ -68,7 +68,7 @@ def save_metadata(color, image_size, list_level_name, list_path_images, list_cou
     display('save csv in %s' % filename_csv)
     df.to_csv(filename_csv, sep=';', na_rep=None, encoding='utf-8', lineterminator='\n', index=None)
     display(df.head(3))
-    display('total of images %d' % df['count'].sum())
+    display('total of images: %d' % df['count'].sum())
 
     df = db.get_informations_images(list_path_images, session)
     filename_csv = os.path.join(path_out, 'image_informations.csv')
