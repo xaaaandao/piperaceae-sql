@@ -85,12 +85,13 @@ def get_records_group_by_level(condition, level, minimum_image, session):
 
 
 def filter_records(color, image_size, minimum_image, records, session):
+    list_image_id = []
     list_level_name = []
     list_path_images = []
     for i, q in enumerate(records):
         level = q[0]
         list_seq = q[1]
-        query = session.query(sa.func.array_agg(sa.distinct(Image.path))) \
+        query = session.query(Image.id, sa.func.array_agg(sa.distinct(Image.path))) \
             .filter(sa.and_(Image.seq_id.in_(list_seq),
                             Image.height.__eq__(image_size[0]),
                             Image.width.__eq__(image_size[1]),
@@ -98,13 +99,13 @@ def filter_records(color, image_size, minimum_image, records, session):
             .group_by(Image.seq_id) \
             .all()
 
-        l = list(itertools.chain(*query))  # "remove of tuples"
+        list_barcode = list(itertools.chain(*query))  # "remove of tuples"
 
-        if len(l) >= minimum_image:
+        if len(list_barcode) >= minimum_image:
 
             # remove images duplicates
             list_only_one_path = []
-            for barcode in l:
+            for barcode in list_barcode:
                 list_only_one_path.append(sorted(barcode)[0])  # sorted and catch first value of list
 
             if len(np.unique(list_only_one_path)) >= minimum_image:
@@ -115,11 +116,12 @@ def filter_records(color, image_size, minimum_image, records, session):
 
 
 def get_informations_images(list_path_images, session):
-    list_path_images = list(itertools.chain(*list_path_images))
+    list_images = list(itertools.chain(*list_path_images))
+
     columns = [DataTrustedIdentifier.seq, DataTrustedIdentifier.genus_trusted, DataTrustedIdentifier.specific_epithet_trusted,
                DataTrustedIdentifier.catalog_number, DataTrustedIdentifier.barcode, Image.path,
                DataTrustedIdentifier.institution_code, DataTrustedIdentifier.collection_code]
-    condition = sa.and_(Image.path.in_(list_path_images),
+    condition = sa.and_(Image.path.in_(list_images),
                         DataTrustedIdentifier.seq == Image.seq_id)
     query = session.query(*columns) \
         .filter(condition) \

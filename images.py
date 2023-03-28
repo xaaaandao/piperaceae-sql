@@ -8,10 +8,10 @@ from IPython.display import display
 
 def get_list_of_images_invalid():
     return {
-        'barcode': ['INPA0248526', 'INPA0248523', 'INPA0248528', 'NY01421575_01', 'HUFSJ001689_v00', 'HUFSJ001133_v00',
-                    'HUFSJ002198_v00', 'HUFSJ003255_v00', 'HVASF000487_v01', 'INPA0019084_nd', 'INPA0022379_nd',
-                    'INPA0032742_nd', 'INPA0023115', 'NL-U1484137', 'INPA0012286', 'INPA0146998'],
-        'reason': ['horizontal', 'horizontal', 'horizontal', 'horizontal', 'not exsicate', 'not exsicate',
+        'barcode': ['INPA0248526', 'INPA0248523', 'INPA0248528', 'NY01421926_01', 'NY01421575_01', 'HUFSJ001689_v00',
+                    'HUFSJ001133_v00', 'HUFSJ002198_v00', 'HUFSJ003255_v00', 'HVASF000487_v01', 'INPA0019084_nd',
+                    'INPA0022379_nd', 'INPA0032742_nd', 'INPA0023115', 'NL-U1484137', 'INPA0012286', 'INPA0146998'],
+        'reason': ['horizontal', 'horizontal', 'horizontal', 'horizontal', 'horizontal', 'not exsicate', 'not exsicate',
                    'not exsicate', 'not exsicate', 'not exsicate', 'label', 'label', 'label', 'letter', 'letter',
                    'letter', 'incomplete']
     }
@@ -25,9 +25,9 @@ def remove_images_invalid(list_level_name, list_images_invalid, list_path_images
         matching = [path for path in p if not any(barcode in path for barcode in list_images_invalid['barcode'])]
 
         if len(p) != len(matching):
-            print('specie: %s before: %d after: %d' % (list_level_name[i], len(p), len(matching)))
+            # print('specie: %s before: %d after: %d' % (list_level_name[i], len(p), len(matching)))
             diff = list(set(p) ^ set(matching))
-            print('diff: %s' % str(diff))
+            # print('diff: %s' % str(diff))
 
         list_path_correct.append(matching)
         list_count_path.append(len(matching))
@@ -78,28 +78,30 @@ def save_metadata(color, image_size, list_level_name, list_path_images, list_cou
     display(df.head(3))
 
 
-def separate_and_copy_images(condition, level, list_color, list_images_invalid, list_minimum_image, list_image_size, path_out, session):
+def separate_and_copy_images(condition, level, list_color, list_images_invalid, list_minimum_image, list_image_size,
+                             path_out, session):
     for color in list_color:
         for image_size in list_image_size:
             for minimum_image in list_minimum_image:
                 records = db.get_records_group_by_level(condition, level, minimum_image, session)
-                list_level_name, list_path_images = db.filter_records(color, (int(image_size), int(image_size)), minimum_image, records, session)
+                list_level_name, list_path_images = db.filter_records(color, (int(image_size), int(image_size)),
+                                                                      minimum_image, records, session)
 
                 if len(list_path_images) > 0:
                     list_count_path, list_path_images = remove_images_invalid(list_level_name, list_images_invalid,
                                                                               list_path_images)
 
-                    path_out = os.path.join(path_out, color.upper(), image_size, str(minimum_image))
+                    path_dst = os.path.join(path_out, color.upper(), image_size, str(minimum_image))
 
-                    if not os.path.exists(path_out):
-                        os.makedirs(path_out)
+                    if not os.path.exists(path_dst):
+                        os.makedirs(path_dst)
 
-                    list_path_dst = copy_images(list_level_name, list_path_images, path_out)
+                    list_path_dst = copy_images(list_level_name, list_path_images, path_dst)
 
                     save_metadata(color, image_size, list_level_name, list_path_images, list_count_path, list_path_dst,
-                                  minimum_image, path_out, session)
+                                  minimum_image, path_dst, session)
 
 
 def get_url_image(barcode, herbarium, height=5000, width=5000):
     return 'https://specieslink.net/search/util/osd-dezoomify?imagecode=%s&path=herbaria/%s/%s&width=%s&height=%s' % (
-    barcode, herbarium, barcode, str(width), str(height))
+        barcode, herbarium, barcode, str(width), str(height))
