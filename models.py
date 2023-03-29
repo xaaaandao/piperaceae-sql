@@ -2,7 +2,6 @@ import sqlalchemy as sa
 import sqlalchemy.ext.declarative
 import sqlalchemy.orm
 
-
 Base = sa.ext.declarative.declarative_base()
 
 
@@ -222,6 +221,8 @@ class DataTrustedIdentifier(Base):
     specific_epithet_trusted = sa.Column(sa.String, nullable=True)
     infraspecific_epithet_trusted = sa.Column(sa.String, nullable=True)
     scientific_name_authorship_trusted = sa.Column(sa.String, nullable=True)
+    list_src = sa.Column(sa.ARRAY(sa.String()), nullable=True)
+    list_title = sa.Column(sa.ARRAY(sa.String()), nullable=True)
     info_image = sqlalchemy.orm.relationship('Image', backref='dti')
 
     def __repr__(self):
@@ -240,13 +241,14 @@ class DataTrustedIdentifier(Base):
 
 
 class Image(Base):
-    __tablename__ = 'images'
+    __tablename__ = 'image_sp'
 
     id = sa.Column(sa.BigInteger, primary_key=True, autoincrement=True)
     color_mode = sa.Column(sa.String, nullable=True)
     height = sa.Column(sa.Integer, nullable=True)
     width = sa.Column(sa.Integer, nullable=True)
     path = sa.Column(sa.String, nullable=True)
+    filename = sa.Column(sa.String, nullable=True)
     seq_id = sa.Column(sa.Integer, sa.ForeignKey('data_trusted_identifier.seq'))
 
     # def __repr__(self):

@@ -25,9 +25,9 @@ def remove_images_invalid(list_level_name, list_images_invalid, list_path_images
         matching = [path for path in p if not any(barcode in path for barcode in list_images_invalid['barcode'])]
 
         if len(p) != len(matching):
-            # print('specie: %s before: %d after: %d' % (list_level_name[i], len(p), len(matching)))
+            print('specie: %s before: %d after: %d' % (list_level_name[i], len(p), len(matching)))
             diff = list(set(p) ^ set(matching))
-            # print('diff: %s' % str(diff))
+            print('diff: %s' % str(diff))
 
         list_path_correct.append(matching)
         list_count_path.append(len(matching))
@@ -70,7 +70,7 @@ def save_metadata(color, image_size, list_level_name, list_path_images, list_cou
     display(df.head(3))
     display('total of images: %d' % df['count'].sum())
 
-    df = db.get_informations_images(list_path_images, session)
+    df = db.get_informations_images(color, image_size, list_path_images, session)
     filename_csv = os.path.join(path_out, 'image_informations.csv')
     df.to_csv(filename_csv, sep=';', na_rep=None, encoding='utf-8', lineterminator='\n', index=None)
     display('image informations')
@@ -78,18 +78,15 @@ def save_metadata(color, image_size, list_level_name, list_path_images, list_cou
     display(df.head(3))
 
 
-def separate_and_copy_images(condition, level, list_color, list_images_invalid, list_minimum_image, list_image_size,
-                             path_out, session):
+def separate_and_copy_images(condition, level, list_color, list_images_invalid, list_minimum_image, list_image_size, path_out, session):
     for color in list_color:
         for image_size in list_image_size:
             for minimum_image in list_minimum_image:
                 records = db.get_records_group_by_level(condition, level, minimum_image, session)
-                list_level_name, list_path_images = db.filter_records(color, (int(image_size), int(image_size)),
-                                                                      minimum_image, records, session)
+                list_level_name, list_path_images = db.filter_records(color, (int(image_size), int(image_size)), minimum_image, records, session)
 
                 if len(list_path_images) > 0:
-                    list_count_path, list_path_images = remove_images_invalid(list_level_name, list_images_invalid,
-                                                                              list_path_images)
+                    list_count_path, list_path_images = remove_images_invalid(list_level_name, list_images_invalid, list_path_images)
 
                     path_dst = os.path.join(path_out, color.upper(), image_size, str(minimum_image))
 
@@ -98,8 +95,7 @@ def separate_and_copy_images(condition, level, list_color, list_images_invalid, 
 
                     list_path_dst = copy_images(list_level_name, list_path_images, path_dst)
 
-                    save_metadata(color, image_size, list_level_name, list_path_images, list_count_path, list_path_dst,
-                                  minimum_image, path_dst, session)
+                    save_metadata(color, (int(image_size), int(image_size)), list_level_name, list_path_images, list_count_path, list_path_dst, minimum_image, path_dst, session)
 
 
 def get_url_image(barcode, herbarium, height=5000, width=5000):

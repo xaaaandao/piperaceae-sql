@@ -91,7 +91,7 @@ def filter_records(color, image_size, minimum_image, records, session):
     for i, q in enumerate(records):
         level = q[0]
         list_seq = q[1]
-        query = session.query(Image.id, sa.func.array_agg(sa.distinct(Image.path))) \
+        query = session.query(sa.func.array_agg(sa.distinct(Image.path))) \
             .filter(sa.and_(Image.seq_id.in_(list_seq),
                             Image.height.__eq__(image_size[0]),
                             Image.width.__eq__(image_size[1]),
@@ -102,6 +102,7 @@ def filter_records(color, image_size, minimum_image, records, session):
         list_barcode = list(itertools.chain(*query))  # "remove of tuples"
 
         if len(list_barcode) >= minimum_image:
+            # print(list_barcode, sep='\n')
 
             # remove images duplicates
             list_only_one_path = []
@@ -115,16 +116,20 @@ def filter_records(color, image_size, minimum_image, records, session):
     return list_level_name, list_path_images
 
 
-def get_informations_images(list_path_images, session):
-    list_images = list(itertools.chain(*list_path_images))
+def get_informations_images(color, image_size, list_path_images, session):
+    list_path_images = list(itertools.chain(*list_path_images))
 
     columns = [DataTrustedIdentifier.seq, DataTrustedIdentifier.genus_trusted, DataTrustedIdentifier.specific_epithet_trusted,
                DataTrustedIdentifier.catalog_number, DataTrustedIdentifier.barcode, Image.path,
                DataTrustedIdentifier.institution_code, DataTrustedIdentifier.collection_code]
-    condition = sa.and_(Image.path.in_(list_images),
-                        DataTrustedIdentifier.seq == Image.seq_id)
+    condition = sa.and_(Image.path.in_(list_path_images),
+                        DataTrustedIdentifier.seq == Image.seq_id,
+                        Image.height.__eq__(image_size[0]),
+                        Image.width.__eq__(image_size[1]),
+                        Image.color_mode.__eq__(color))
     query = session.query(*columns) \
         .filter(condition) \
+        .distinct()\
         .all()
 
     data = [(q.seq, q.genus_trusted, q.specific_epithet_trusted, q.catalog_number, q.barcode, q.path, q.institution_code,
