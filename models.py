@@ -247,6 +247,7 @@ class Image(Base):
     color_mode = sa.Column(sa.String, nullable=True)
     height = sa.Column(sa.Integer, nullable=True)
     width = sa.Column(sa.Integer, nullable=True)
+    path_segmented = sa.Column(sa.String, nullable=True)
     path = sa.Column(sa.String, nullable=True)
     filename = sa.Column(sa.String, nullable=True)
     seq_id = sa.Column(sa.Integer, sa.ForeignKey('data_trusted_identifier.seq'))
