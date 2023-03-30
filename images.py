@@ -14,12 +14,13 @@ def get_list_of_images_invalid():
     }
 
 
-def save_metadata(list_count_samples, list_level, list_path_images_final, list_seq_final, out, session):
+def save_metadata(list_count_samples, list_f, list_level, list_path_images_final, list_seq_final, out, session):
     df = pd.DataFrame({
         'levels': list_level,
         'paths': list_path_images_final,
         'count': list_count_samples,
         'seq': list_seq_final,
+        'dst': list_f,
     })
     print('total of levels: %d total of images: %d' % (len(list_level), df['count'].sum()))
     display(df.head(4))
@@ -39,6 +40,7 @@ def save_metadata(list_count_samples, list_level, list_path_images_final, list_s
 
 
 def copy_images(list_level, list_path_images_final, out):
+    list_f=[]
     if not os.path.exists(out):
         os.makedirs(out)
 
@@ -47,8 +49,10 @@ def copy_images(list_level, list_path_images_final, out):
         list_images = ff[1]
 
         out_level = os.path.join(out, 'f%d' % i)
+        list_f.append(out_level)
         if not os.path.exists(out_level):
             os.makedirs(out_level)
 
         for i, image in enumerate(list_images, start=1):
             shutil.copy(image, out_level)
+    return list_f
