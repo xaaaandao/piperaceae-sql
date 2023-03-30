@@ -21,7 +21,7 @@ def save_metadata(list_count_samples, list_level, list_path_images_final, list_s
         'count': list_count_samples,
         'seq': list_seq_final,
     })
-    print('total of images: %d' % df['count'].sum())
+    print('total of levels: %d total of images: %d' % (len(list_level), df['count'].sum()))
     display(df.head(4))
     filename=os.path.join(out, 'info_dataset.csv')
     df.to_csv(filename, sep=';', index=None, lineterminator='\n', doublequote=True)
