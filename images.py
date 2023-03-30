@@ -14,7 +14,7 @@ def get_list_of_images_invalid():
     }
 
 
-def save_metadata(list_count_samples, list_level, list_path_images_final, list_seq_final, session, out):
+def save_metadata(list_count_samples, list_level, list_path_images_final, list_seq_final, out, session):
     df = pd.DataFrame({
         'levels': list_level,
         'paths': list_path_images_final,

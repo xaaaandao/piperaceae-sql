@@ -1,16 +1,12 @@
-import itertools
 import os
 
-import numpy as np
-import pandas as pd
 import sqlalchemy
 import sqlalchemy as sa
 import sqlalchemy.ext.declarative
 import sqlalchemy.orm
 import sqlalchemy.schema
 
-from images import get_url_image
-from models import get_base, DataTrustedIdentifier, Image
+from models import get_base, DataTrustedIdentifier
 from unaccent import unaccent
 
 cfg = {
