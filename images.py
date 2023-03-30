@@ -30,7 +30,7 @@ def save_metadata(list_count_samples, list_level, list_path_images_final, list_s
     query = session.query(DataTrustedIdentifier)\
                     .filter(DataTrustedIdentifier.seq.in_(list_seq))\
                     .all()
-    data = [(q.seq, q.genus, q.specific_epithet, q.genus_trusted, q.specific_epithet, q.list_src) for q in query]
+    data = [(q.seq, q.genus, q.specific_epithet, q.genus_trusted, q.specific_epithet_trusted, q.list_src) for q in query]
     columns = ['seq', 'genus', 'specific_epithet', 'genus_trusted', 'specific_epithet_trusted', 'urls']
     df = pd.DataFrame(data, columns=columns)
     display(df.head(4))
