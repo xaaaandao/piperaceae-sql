@@ -2,10 +2,11 @@ import itertools
 import numpy as np
 import os
 import pandas as pd
+import sqlalchemy as sa
 import shutil
 
 from IPython.display import display
-from models import DataTrustedIdentifier
+from models import DataTrustedIdentifier, Image
 
 
 def get_list_of_images_invalid():
@@ -15,22 +16,56 @@ def get_list_of_images_invalid():
     }
 
 
-def save_info_dataset(color, image_size, level, list_count_samples, list_level, minimum_image, out):
+def select_images(color, image_size, list_count_samples, list_level, list_images_invalid, list_path_images_final, list_seq_final, minimum_image, session, query):
+    for q in query:
+        qzao = session.query(Image.seq_id, sa.func.array_agg(Image.path_segmented).label('list_path_segmented')) \
+            .filter(sa.and_(Image.seq_id.in_(q.list_seq),
+                            Image.color_mode.__eq__(color.upper()),
+                            Image.height.__eq__(image_size),
+                            Image.width.__eq__(image_size),
+                            sa.not_(Image.filename.in_(list_images_invalid)),
+                            sa.not_(Image.filename.ilike('%_v0%')),
+                            sa.not_(Image.filename.like('%_e%')),
+                            sa.not_(Image.filename.like('%_nd%')),
+                            )) \
+            .group_by(Image.seq_id) \
+            .all()
+
+        list_one_image_per_seq = []
+        list_seq_one_image = []
+        for qzinho in qzao:
+            list_seq_one_image.append(qzinho.seq_id)
+            list_one_image_per_seq.append(sorted(qzinho.list_path_segmented)[0])
+
+        if len(list_one_image_per_seq) >= minimum_image:
+            list_count_samples.append(len(list_one_image_per_seq))
+            list_level.append(q.specific_epithet_trusted)
+            list_path_images_final.append(list_one_image_per_seq)
+            list_seq_final.append(list_seq_one_image)
+
+
+def save_info_dataset(color, image_size, level, list_count_samples, list_level, minimum_image, region, out):
     total=np.sum([c for c in list_count_samples])
     index=['dst', 'color', 'image_size', 'minimum_image', 'level_name', 'levels', 'total', 'average']
-    df = pd.DataFrame(data=[out, color, image_size, minimum_image, level.name, len(list_level), total, round(total/len(list_level), 2)], index=index)
+    data=[out, color, image_size, minimum_image, level.name, len(list_level), total, round(total/len(list_level), 2)]
+
+    if region:
+        index.insert(5, 'region')
+        data.insert(5, region)
+
+    df = pd.DataFrame(data, index=index)
     display(df)
     filename = os.path.join(out, 'info_dataset.csv')
     df.to_csv(filename, sep=';', index=index, header=None, lineterminator='\n', doublequote=True)
 
 
-def save_metadata(color, image_size, level, list_count_samples, list_f, list_level, list_path_images_final, list_seq_final, minimum_image, out, session):
-    save_info_per_level(list_count_samples, list_f, list_level, list_path_images_final, list_seq_final, out)
-    save_info_per_sample(list_seq_final, out, session)
-    save_info_dataset(color, image_size, level, list_count_samples, list_level, minimum_image, out)
+def save_metadata(color, image_size, level, list_count_samples, list_f, list_level, list_path_images_final, list_seq_final, minimum_image, out, session, region=None):
+    save_info_per_level(list_count_samples, list_f, list_level, list_path_images_final, list_seq_final, region, out)
+    save_info_per_sample(list_seq_final, region, out, session)
+    save_info_dataset(color, image_size, level, list_count_samples, list_level, minimum_image, region, out)
 
 
-def save_info_per_sample(list_seq_final, out, session):
+def save_info_per_sample(list_seq_final, region, out, session):
     list_seq = list(itertools.chain(*list_seq_final))
     query = session.query(DataTrustedIdentifier) \
         .filter(DataTrustedIdentifier.seq.in_(list_seq)) \
@@ -39,12 +74,12 @@ def save_info_per_sample(list_seq_final, out, session):
             query]
     columns = ['seq', 'genus', 'specific_epithet', 'genus_trusted', 'specific_epithet_trusted', 'urls']
     df = pd.DataFrame(data, columns=columns)
-    display(df.head(4))
+    display(df.head(3))
     filename = os.path.join(out, 'info_samples.csv')
     df.to_csv(filename, sep=';', index=None, lineterminator='\n', doublequote=True)
 
 
-def save_info_per_level(list_count_samples, list_f, list_level, list_path_images_final, list_seq_final, out):
+def save_info_per_level(list_count_samples, list_f, list_level, list_path_images_final, list_seq_final, region, out):
     df = pd.DataFrame({
         'levels': list_level,
         'count': list_count_samples,
@@ -53,7 +88,7 @@ def save_info_per_level(list_count_samples, list_f, list_level, list_path_images
         'seq': list_seq_final,
     })
     print('total of levels: %d total of images: %d' % (len(list_level), df['count'].sum()))
-    display(df.head(4))
+    display(df.head(3))
     filename = os.path.join(out, 'info_levels.csv')
     df.to_csv(filename, sep=';', index=None, lineterminator='\n', doublequote=True)
 
