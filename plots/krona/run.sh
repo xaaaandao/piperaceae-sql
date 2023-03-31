@@ -1,0 +1,1 @@
+./scripts/ImportText.pl test.txt -o a.html && sudo cp a.html /var/www/html/index.html
