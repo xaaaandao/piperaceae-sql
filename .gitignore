@@ -4,3 +4,5 @@ result/
 *.pb
 *.xml
 *.iml
+*.jpeg
+*.png
