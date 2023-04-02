@@ -70,9 +70,9 @@ def save_info_per_sample(list_seq_final, region, out, session):
     query = session.query(DataTrustedIdentifier) \
         .filter(DataTrustedIdentifier.seq.in_(list_seq)) \
         .all()
-    data = [(q.seq, q.genus, q.specific_epithet, q.genus_trusted, q.specific_epithet_trusted, q.list_src) for q in
+    data = [(q.seq, q.genus, q.specific_epithet, q.genus_trusted, q.specific_epithet_trusted, q.country_trusted, q.country, q.county, q.state_province, q.list_src) for q in
             query]
-    columns = ['seq', 'genus', 'specific_epithet', 'genus_trusted', 'specific_epithet_trusted', 'urls']
+    columns = ['seq', 'genus', 'specific_epithet', 'genus_trusted', 'specific_epithet_trusted', 'country_trusted', 'country' ,'county', 'state_province', 'urls']
     df = pd.DataFrame(data, columns=columns)
     display(df.head(3))
     filename = os.path.join(out, 'info_samples.csv')
