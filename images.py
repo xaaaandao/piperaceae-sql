@@ -108,5 +108,5 @@ def copy_images(list_level, list_path_images_final, out):
             os.makedirs(out_level)
 
         for i, image in enumerate(list_images, start=1):
-            shutil.copy(image.replace('w_pred_mask', 'jpeg'), out_level)
+            shutil.copy(image, out_level)
     return list_f
