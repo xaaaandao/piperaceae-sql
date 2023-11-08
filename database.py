@@ -6,44 +6,29 @@ import sqlalchemy.ext.declarative
 import sqlalchemy.orm
 import sqlalchemy.schema
 
-from models import get_base, DataTrustedIdentifier
+from models import DataTrustedIdentifier
 from unaccent import unaccent
 
-cfg = {
-    'host': '192.168.0.144',
-    'user': os.environ['POSTGRE_USER'],
-    'password': os.environ['POSTGRE_PASSWORD']
-}
+# cfg = {
+#     'host': '192.168.0.144',
+#     'user': os.environ['POSTGRE_USER'],
+#     'password': os.environ['POSTGRE_PASSWORD']
+# }
 
 
-def connect(echo=True):
+def connect(echo=True, host='localhost', user=os.environ['myuser_pg'], password=os.environ['mypwd_pg'], port='5432', database='herbario'):
     try:
-        url = 'postgresql+psycopg2://%s:%s@%s:5432/herbario' % (cfg['user'], cfg['password'], cfg['host'])
+        url = 'postgresql+psycopg2://%s:%s@%s:%s/%s' % (user, password, host, port, database)
         engine = sa.create_engine(url, echo=echo, pool_pre_ping=True)
         session = sqlalchemy.orm.sessionmaker(bind=engine)
         session.configure(bind=engine)
-        db = session()
         if engine.connect():
-            return engine, db
+            return engine, session()
     except Exception as e:
-        print('problems with host %s (%s)' % (cfg['host'], e))
+        print(e)
 
 
-def table_exists(engine, table_name):
-    return True if table_name in show_tables(engine) else False
 
-
-def create_table(engine, table):
-    table_name = table.__tablename__
-
-    if not table_exists(engine, table_name):
-        base = get_base()
-        base.metadata.tables[table_name].create(bind=engine)
-        print('create table: %s' % table.__tablename__)
-
-
-def show_tables(engine):
-    return sa.inspect(engine).get_table_names()
 
 
 def update_country_trusted(session, query):

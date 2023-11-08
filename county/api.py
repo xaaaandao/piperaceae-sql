@@ -1,4 +1,8 @@
+import database as db
+
 import requests
+
+from models import County
 
 
 def get_data_api():
@@ -27,16 +31,15 @@ def get_county_name(json):
     raise KeyError('key nome not found')
 
 
-def get_name_region(json):
-    return json['microrregiao']['mesorregiao']['UF'][
-        'regiao']['nome']
+def get_region_name(json):
+    return json['microrregiao']['mesorregiao']['UF']['regiao']['nome']
 
 
 def get_uf(json):
     if 'microrregiao' in json:
         if 'mesorregiao' in json['microrregiao']:
             if 'UF' in json['microrregiao']['mesorregiao']:
-                return get_acronym_state(json), get_name_state(json), get_name_region(json)
+                return get_acronym_state(json), get_name_state(json), get_region_name(json)
             raise KeyError('key UF not found')
         raise KeyError('key mesorregiao not found')
     raise KeyError('key microrregiao not found')
@@ -48,3 +51,57 @@ def get_name_state(json):
 
 def get_acronym_state(json):
     return json['microrregiao']['mesorregiao']['UF']['sigla']
+
+
+def count_in_county_table(session):
+    try:
+        return session.query(County).count()
+    except Exception as e:
+        print(e)
+        session.flush()
+
+
+def table_county_is_empty(query):
+    return True if query == 0 else False
+
+
+def parse_json(json):
+    return County(id=get_id(json), county=get_acronym_state(json), uf=get_uf(json), state=get_name_state(json), regiao=get_region_name(json))
+
+
+def main():
+    engine, session = db.connect()
+
+    # pip install pyopenssl cryptography
+    response = get_municipios()
+    query = count_in_county_table(session)
+    if table_county_is_empty(query):
+        for i, j in enumerate(response.json()):
+            print('%d/%d' % (i, len(response.json())))
+            insert_new_county(j, session)
+
+
+    session.close()
+    engine.dispose()
+
+
+def insert_new_county(j, session):
+    c = parse_json(j)
+    try:
+        session.add(c)
+        session.commit()
+    except Exception as e:
+        print(e)
+        session.flush()
+
+
+def get_municipios():
+    try:
+        response = requests.get('http://servicodados.ibge.gov.br/api/v1/localidades/municipios')
+        return response
+    except Exception as e:
+        print(e)
+
+
+if __name__ == '__main__':
+    main()
