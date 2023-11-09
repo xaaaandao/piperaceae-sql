@@ -9,12 +9,6 @@ import sqlalchemy.schema
 from models import DataTrustedIdentifier
 from unaccent import unaccent
 
-# cfg = {
-#     'host': '192.168.0.144',
-#     'user': os.environ['POSTGRE_USER'],
-#     'password': os.environ['POSTGRE_PASSWORD']
-# }
-
 
 def connect(echo=True, host='localhost', user=os.environ['myuser_pg'], password=os.environ['mypwd_pg'], port='5432', database='herbario'):
     try:
@@ -78,3 +72,7 @@ def get_state_uf_county(query):
     county_unaccented_lower = unaccent(sa.func.lower(DataTrustedIdentifier.county)).in_(list_county)
 
     return state_unaccented_lower, uf_unaccented_lower, county_unaccented_lower
+
+
+def table_is_empty(query):
+    return True if query == 0 else False
