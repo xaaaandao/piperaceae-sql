@@ -6,7 +6,7 @@ import sqlalchemy.ext.declarative
 import sqlalchemy.orm
 import sqlalchemy.schema
 
-from models import DataTrustedIdentifier
+from models import DataIdentifiersSelectedGeorge
 from unaccent import unaccent
 
 
@@ -27,9 +27,9 @@ def connect(echo=True, host='localhost', user=os.environ['myuser_pg'], password=
 
 def update_country_trusted(session, query):
     uf_unaccented_lower, state_unaccented_lower, county_unaccented_lower = get_list_uf_state_county(query)
-    condition = sa.and_(DataTrustedIdentifier.country_trusted.is_(None),
+    condition = sa.and_(DataIdentifiersSelectedGeorge.country_trusted.is_(None),
                         sa.or_(uf_unaccented_lower, state_unaccented_lower))
-    session.query(DataTrustedIdentifier) \
+    session.query(DataIdentifiersSelectedGeorge) \
         .filter(condition) \
         .update({'country_trusted': 'Brasil'}, synchronize_session=False)
 
@@ -39,9 +39,9 @@ def get_list_uf_state_county(query):
     list_state = [unaccent(sa.func.lower(q.state)) for q in query]
     list_county = [unaccent(sa.func.lower(q.county)) for q in query]
 
-    uf_unaccented_lower = unaccent(sa.func.lower(DataTrustedIdentifier.state_province)).in_(list_uf)
-    state_unaccented_lower = unaccent(sa.func.lower(DataTrustedIdentifier.state_province)).in_(list_state)
-    county_unaccented_lower = unaccent(sa.func.lower(DataTrustedIdentifier.county)).in_(list_county)
+    uf_unaccented_lower = unaccent(sa.func.lower(DataIdentifiersSelectedGeorge.state_province)).in_(list_uf)
+    state_unaccented_lower = unaccent(sa.func.lower(DataIdentifiersSelectedGeorge.state_province)).in_(list_state)
+    county_unaccented_lower = unaccent(sa.func.lower(DataIdentifiersSelectedGeorge.county)).in_(list_county)
 
     return uf_unaccented_lower, state_unaccented_lower, county_unaccented_lower
 
@@ -52,7 +52,7 @@ def get_columns_table(table):
 
 def get_records_group_by_level(condition, level, minimum_image, session):
     columns = [level,
-               sa.func.array_agg(DataTrustedIdentifier.seq).label('list_seq')]
+               sa.func.array_agg(DataIdentifiersSelectedGeorge.seq).label('list_seq')]
     query = session.query(*columns) \
         .filter(condition) \
         .distinct() \
@@ -67,9 +67,9 @@ def get_state_uf_county(query):
     list_uf = [unaccent(sa.func.lower(q.uf)) for q in query]
     list_state = [unaccent(sa.func.lower(q.state)) for q in query]
     list_county = [unaccent(sa.func.lower(q.county)) for q in query]
-    uf_unaccented_lower = unaccent(sa.func.lower(DataTrustedIdentifier.state_province)).in_(list_uf)
-    state_unaccented_lower = unaccent(sa.func.lower(DataTrustedIdentifier.state_province)).in_(list_state)
-    county_unaccented_lower = unaccent(sa.func.lower(DataTrustedIdentifier.county)).in_(list_county)
+    uf_unaccented_lower = unaccent(sa.func.lower(DataIdentifiersSelectedGeorge.state_province)).in_(list_uf)
+    state_unaccented_lower = unaccent(sa.func.lower(DataIdentifiersSelectedGeorge.state_province)).in_(list_state)
+    county_unaccented_lower = unaccent(sa.func.lower(DataIdentifiersSelectedGeorge.county)).in_(list_county)
 
     return state_unaccented_lower, uf_unaccented_lower, county_unaccented_lower
 

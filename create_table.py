@@ -17,7 +17,7 @@ def table_exists(engine, table_name):
 def main():
     engine, session = db.connect()
 
-    list_tables = [DataTrustedIdentifier, DataSP, DataTrustedIdentifier, County, Image, TrustedIdentifier]
+    list_tables = [DataIdentifiersSelectedGeorge, DataSP, DataIdentifiersSelectedGeorge, County, Image, TrustedIdentifier]
     for t in list_tables:
         if not table_exists(engine, t.__tablename__):
             base = get_base()

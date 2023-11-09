@@ -6,7 +6,7 @@ import sqlalchemy as sa
 import shutil
 
 from IPython.display import display
-from models import DataTrustedIdentifier, Image
+from models import DataIdentifiersSelectedGeorge, Image
 
 
 def get_list_of_images_invalid():
@@ -67,8 +67,8 @@ def save_metadata(color, image_size, level, list_count_samples, list_dst, list_f
 
 def save_info_per_sample(list_seq_final, region, out, session):
     list_seq = list(itertools.chain(*list_seq_final))
-    query = session.query(DataTrustedIdentifier) \
-        .filter(DataTrustedIdentifier.seq.in_(list_seq)) \
+    query = session.query(DataIdentifierSelectedGeorge) \
+        .filter(DataIdentifierSelectedGeorge.seq.in_(list_seq)) \
         .all()
     data = [(q.seq, q.genus, q.specific_epithet, q.genus_trusted, q.specific_epithet_trusted, q.country_trusted, q.country, q.county, q.state_province, q.list_src) for q in
             query]

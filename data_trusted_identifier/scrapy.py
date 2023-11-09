@@ -2,7 +2,7 @@ import itertools
 import scrapy
 import database as db
 
-from models import DataTrustedIdentifier
+from models import DataIdentifierSelectedGeorge
 from scrapy.crawler import CrawlerProcess
 from scrapy.http import FormRequest
 from scrapy.utils.project import get_project_settings
@@ -55,8 +55,8 @@ class SpeciesLink(scrapy.Spider):
         list_title = [title for title in list_title if barcode in title or catalog_number in list_title]
 
         if len(list_src) > 0 or len(list_title) > 0:
-            self.session.query(DataTrustedIdentifier) \
-                .filter(DataTrustedIdentifier.seq.__eq__(seq)) \
+            self.session.query(DataIdentifierSelectedGeorge) \
+                .filter(DataIdentifierSelectedGeorge.seq.__eq__(seq)) \
                 .update(values={'list_src': list_src, 'list_title': list_title}, synchronize_session=False)
             self.session.commit()
 
@@ -65,7 +65,7 @@ def main():
     engine, session = db.connect()
     engine.echo = False
 
-    query = session.query(DataTrustedIdentifier) \
+    query = session.query(DataIdentifierSelectedGeorge) \
         .filter() \
         .all()
 

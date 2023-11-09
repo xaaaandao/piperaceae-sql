@@ -6,40 +6,40 @@ Base = sa.ext.declarative.declarative_base()
 
 
 def create_data_trusted_identifier(info):
-    return DataTrustedIdentifier(seq=info.seq,
-                                 modified=info.modified, institution_code=info.institution_code,
-                                 collection_code=info.collection_code, catalog_number=info.catalog_number,
-                                 basis_of_record=info.basis_of_record, kingdom=info.kingdom, phylum=info.phylum,
-                                 classe=info.classe, order=info.order, family=info.family,
-                                 genus=info.genus,
-                                 specific_epithet=info.specific_epithet,
-                                 infraspecific_epithet=info.infraspecific_epithet,
-                                 scientific_name=info.scientific_name,
-                                 scientific_name_authorship=info.scientific_name_authorship,
-                                 identified_by=info.identified_by, year_identified=info.year_identified,
-                                 month_identified=info.month_identified, day_identified=info.day_identified,
-                                 type_status=info.type_status,
-                                 recorded_by=info.recorded_by, record_number=info.record_number,
-                                 field_number=info.field_number, year=info.year, month=info.month,
-                                 day=info.day, event_time=info.event_time,
-                                 continent_ocean=info.continent_ocean, country=info.country,
-                                 state_province=info.state_province, county=info.county, locality=info.locality,
-                                 decimal_longitude=info.decimal_longitude,
-                                 decimal_latitude=info.decimal_latitude, verbatim_longitude=info.verbatim_longitude,
-                                 verbatim_latitude=info.verbatim_latitude,
-                                 coordinate_precision=info.coordinate_precision,
-                                 bounding_box=info.bounding_box,
-                                 minimum_elevation_in_meters=info.minimum_elevation_in_meters,
-                                 maximum_elevation_in_meters=info.maximum_elevation_in_meters,
-                                 minimum_depth_in_meters=info.minimum_depth_in_meters,
-                                 maximum_depth_in_meters=info.maximum_depth_in_meters, sex=info.sex,
-                                 preparation_type=info.preparation_type,
-                                 individual_count=info.individual_count,
-                                 previous_catalog_number=info.previous_catalog_number,
-                                 relationship_type=info.relationship_type,
-                                 related_catalog_item=info.related_catalog_item,
-                                 occurrence_remarks=info.occurrence_remarks, barcode=info.barcode,
-                                 imagecode=info.imagecode, geo_flag=info.geo_flag)
+    return DataIdentifiersSelectedGeorge(seq=info.seq,
+                                        modified=info.modified, institution_code=info.institution_code,
+                                        collection_code=info.collection_code, catalog_number=info.catalog_number,
+                                        basis_of_record=info.basis_of_record, kingdom=info.kingdom, phylum=info.phylum,
+                                        classe=info.classe, order=info.order, family=info.family,
+                                        genus=info.genus,
+                                        specific_epithet=info.specific_epithet,
+                                        infraspecific_epithet=info.infraspecific_epithet,
+                                        scientific_name=info.scientific_name,
+                                        scientific_name_authorship=info.scientific_name_authorship,
+                                        identified_by=info.identified_by, year_identified=info.year_identified,
+                                        month_identified=info.month_identified, day_identified=info.day_identified,
+                                        type_status=info.type_status,
+                                        recorded_by=info.recorded_by, record_number=info.record_number,
+                                        field_number=info.field_number, year=info.year, month=info.month,
+                                        day=info.day, event_time=info.event_time,
+                                        continent_ocean=info.continent_ocean, country=info.country,
+                                        state_province=info.state_province, county=info.county, locality=info.locality,
+                                        decimal_longitude=info.decimal_longitude,
+                                        decimal_latitude=info.decimal_latitude, verbatim_longitude=info.verbatim_longitude,
+                                        verbatim_latitude=info.verbatim_latitude,
+                                        coordinate_precision=info.coordinate_precision,
+                                        bounding_box=info.bounding_box,
+                                        minimum_elevation_in_meters=info.minimum_elevation_in_meters,
+                                        maximum_elevation_in_meters=info.maximum_elevation_in_meters,
+                                        minimum_depth_in_meters=info.minimum_depth_in_meters,
+                                        maximum_depth_in_meters=info.maximum_depth_in_meters, sex=info.sex,
+                                        preparation_type=info.preparation_type,
+                                        individual_count=info.individual_count,
+                                        previous_catalog_number=info.previous_catalog_number,
+                                        relationship_type=info.relationship_type,
+                                        related_catalog_item=info.related_catalog_item,
+                                        occurrence_remarks=info.occurrence_remarks, barcode=info.barcode,
+                                        imagecode=info.imagecode, geo_flag=info.geo_flag)
 
 
 def create_identifier(full_name, searched_name, value_founded, trusted=False):
@@ -153,8 +153,8 @@ class TrustedIdentifier(Base):
         return 'TrustedIdentifier(name=%s, searched_name=%s, value_founded=%s, trusted=%s)'
 
 
-class DataTrustedIdentifier(Base):
-    __tablename__ = 'data_trusted_identifier'
+class DataIdentifiersSelectedGeorge(Base):
+    __tablename__ = 'data_identifiers_selected_george'
 
     seq = sa.Column(sa.BigInteger, primary_key=True)
     modified = sa.Column(sa.DateTime, nullable=True)
@@ -226,7 +226,7 @@ class DataTrustedIdentifier(Base):
     info_image = sqlalchemy.orm.relationship('Image', backref='dti')
 
     def __repr__(self):
-        return 'DataTrustedIdentifier(seq=%s, modified=%s, institution_code=%s, collection_code=%s, catalog_number=%s, ' \
+        return 'DataIdentifiersSelectedGeorge(seq=%s, modified=%s, institution_code=%s, collection_code=%s, catalog_number=%s, ' \
                'basis_of_record=%s, kingdom=%s, phylum=%s, classe=%s, order=%s, family=%s, genus=%s, ' \
                'specific_epithet=%s, infraspecific_epithet=%s, scientific_name=%s, scientific_name_authorship=%s, ' \
                'identified_by=%s, year_identified=%s, month_identified=%s, day_identified=%s, type_status=%s, ' \
@@ -250,7 +250,5 @@ class Image(Base):
     path_segmented = sa.Column(sa.String, nullable=True)
     path = sa.Column(sa.String, nullable=True)
     filename = sa.Column(sa.String, nullable=True)
-    seq_id = sa.Column(sa.Integer, sa.ForeignKey('data_trusted_identifier.seq'))
+    seq_id = sa.Column(sa.Integer, sa.ForeignKey('data_identifiers_selected_george.seq'))
 
-    # def __repr__(self):
-    #     return 'Image(path=%s, color_mode=%s, seq_id=%d, height=%d, width=%d)'

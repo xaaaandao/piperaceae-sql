@@ -40,6 +40,7 @@ def main():
             if george_selected_data(row):
                 update_record_data_sp(row, session)
 
+    # this query should return 1419 rows
     print('George selected %d rows' % count_records_selected_by_george(session))
     session.close()
     engine.dispose()

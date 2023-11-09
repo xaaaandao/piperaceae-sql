@@ -11,6 +11,7 @@ $ pip install -r requirements.txt
     CREATE EXTENSION unaccent;
 ``
 
+data_sp (contains 50k+)
 
 2- create_table.py
 
@@ -18,11 +19,10 @@ $ pip install -r requirements.txt
 
 4- insert_metadata.py (metadata specieslink)
 
-5- data_selected_by_george.py (plants of Paraná state and trusted identifiers)
-
 6- trusted_identifiers.py
+- this file insert data of identifiers selected by George
 
-7- data_identifier_selected_george.py (data from identifiers selected by george)
+7- update_country_state_county.py
 
 
 update_path_to_images.py
