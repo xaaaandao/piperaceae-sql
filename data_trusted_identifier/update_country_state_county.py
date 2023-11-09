@@ -14,16 +14,16 @@ list_variations_br = ['Brasil', 'BRASIL', 'Brasil/Bolivia', 'Brasilia', 'brazil'
 def main():
     engine, session = db.connect()
 
-    replace_uneconded_character(session)
-    update_column_country(session)
+    # replace_unecoded_character(session)
+    # update_column_country(session)
 
     # check
-    # count_of_brazil_in_country_trusted = session.query(DataIdentifiersSelectedGeorge) \
-    #     .filter(DataIdentifiersSelectedGeorge.country_trusted == 'Brasil') \
-    #     .count()
-    #
-    # # this query should return 12144
-    # print('count of Brasil in country trusted: %d' % count_of_brazil_in_country_trusted)
+    count_of_brazil_in_country_trusted = session.query(DataIdentifiersSelectedGeorge) \
+        .filter(DataIdentifiersSelectedGeorge.country_trusted == 'Brasil') \
+        .count()
+
+    # this query should return 12144
+    print('count of Brasil in country trusted: %d' % count_of_brazil_in_country_trusted)
 
     session.close()
     engine.dispose()
@@ -52,7 +52,7 @@ def update_column_country(session):
             session.flush()
 
 
-def replace_uneconded_character(session):
+def replace_unecoded_character(session):
     for column in [DataIdentifiersSelectedGeorge.state_province, DataIdentifiersSelectedGeorge.county]:
         list_character_error = list_unencoded_characters['error']
         list_character_correct = list_unencoded_characters['correct']

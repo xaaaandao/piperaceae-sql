@@ -22,16 +22,18 @@ def connect(echo=True, host='localhost', user=os.environ['myuser_pg'], password=
         print(e)
 
 
-
-
-
 def update_country_trusted(session, query):
     uf_unaccented_lower, state_unaccented_lower, county_unaccented_lower = get_list_uf_state_county(query)
     condition = sa.and_(DataIdentifiersSelectedGeorge.country_trusted.is_(None),
                         sa.or_(uf_unaccented_lower, state_unaccented_lower))
-    session.query(DataIdentifiersSelectedGeorge) \
-        .filter(condition) \
-        .update({'country_trusted': 'Brasil'}, synchronize_session=False)
+    try:
+        session.query(DataIdentifiersSelectedGeorge) \
+            .filter(condition) \
+            .update({'country_trusted': 'Brasil'}, synchronize_session=False)
+        session.commit()
+    except Exception as e:
+        print(e)
+        session.flush()
 
 
 def get_list_uf_state_county(query):
@@ -75,4 +77,4 @@ def get_state_uf_county(query):
 
 
 def table_is_empty(query):
-    return True if query == 0 else False
+    return query == 0
