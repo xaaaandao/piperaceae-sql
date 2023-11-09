@@ -14,12 +14,6 @@
 create_table.py,3/0/300c104634876f232ff40276a938731cbe4e7232
 9
 	README.md,8/e/8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
-B
-data_sp/main.ipynb,8/1/811017b5715d641ccd0eef0bff594e50b48f6aa6
-=
-county/api.py,3/0/303745bc50f489905ab9bbf012e341a3942bde61
-A
-county/main.ipynb,0/e/0e28468d5560ee0164a36e0335e763b4b2fb99fc
 9
 	models.py,8/5/85f64e80ba345158acc186d4505f039d4f21420f
 S
@@ -28,16 +22,6 @@ G
 county/insert_county.py,8/2/82c260ae8d6d8bbc58bd3f57c84d3667947a4b15
 J
 data_sp/insert_metadata.py,9/d/9d91644279d71042bf726a238576b5e4913ec372
-D
-data_sp/dataframe.py,6/0/60432045eb4a73228a9b2a5ffb65715a12746d5a
-B
-insert_metadata.py,d/b/dbca5f5995d946856fb6d07dcdffbf41f4bdd560
-[
-+data_sp/identifiers_trusted_by_george.ipynb,5/e/5edf3fae45be5eabdbdf7277c200d6c7d75791ed
-R
-"data_sp/data_selected_by_george.py,8/0/800660e792300d4223ea4a8a26e50b7396f00a29
-F
-data_george/main.ipynb,7/4/74945633c1ec82d25f27b2e498b471998a2fc7e6
 V
 &data_george/data_selected_by_george.py,f/a/fad9d3fcc4deaa9dbc4250aec3097d2beaf4ba5e
 Q
@@ -48,7 +32,5 @@ R
 "data_trusted_identifier/main.ipynb,1/1/11f06f9d28b9e1f084e3872c965c35eedc1e1533
 Y
 )trusted_identifier/trusted_identifiers.py,f/f/ff8b9271f5c2a9f71f91d407ac47dfbfa0550a0b
-@
-image/main.ipynb,7/a/7a082569968e90f5a04587929af08d1f8e4f00e5
 N
 image/update_path_to_images.py,a/f/af923a81831fa16a855c87db66ef99ed4b780194

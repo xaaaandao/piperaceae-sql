@@ -100,8 +100,9 @@ def parse_row(info):
 
 
 def insert_row(df, session):
+    n_rows = len(list(df.iterrows()))
     for i, (idx, row) in enumerate(df.iterrows()):
-        print('%d/%d' % (i, len(list(df.iterrows()))))
+        print('%d/%d' % (i, n_rows))
         data_sp = parse_row(row)
         try:
             session.add(data_sp)

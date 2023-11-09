@@ -30,15 +30,17 @@ def count_records_selected_by_george(session):
 def main():
     engine, session = db.connect()
 
-    filename = '../csv/george_data.csv.csv'
+    filename = '../csv/george_data.csv'
     df = pd.read_csv(filename, sep=';', low_memory=False, skipinitialspace=True)
 
     if count_records_selected_by_george(session) == 0:
+        n_rows = len(list(df.iterrows()))
         for i, (idx, row) in enumerate(df.iterrows()):
-            print('%d/%d' % (i, len(list(df.iterrows()))))
+            print('%d/%d' % (i, n_rows))
             if george_selected_data(row):
                 update_record_data_sp(row, session)
 
+    print('George selected %d rows' % count_records_selected_by_george(session))
     session.close()
     engine.dispose()
 
