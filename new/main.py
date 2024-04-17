@@ -9,14 +9,13 @@ import pandas as pd
 from county import api
 from data_sp.dataframe import rename_header_dataframe, preprocess
 from database import connect
-from models import get_base, County, DataSP, TrustedIdentifier
+from models import get_base, County, DataSP, TrustedIdentifier, DataTrustedIdentifier, create_data_trusted_identifier
 
 import sys
 
 import sqlalchemy
 
 from database import connect
-
 
 datefmt = '%d-%m-%Y+%H-%M-%S'
 dateandtime = datetime.datetime.now().strftime(datefmt)
@@ -28,6 +27,7 @@ format_info = green + format + reset
 format_error = bold_red + format + reset
 logging.basicConfig(format=format_info, datefmt='[%d/%m/%Y %H:%M:%S]', level=logging.INFO)
 logging.basicConfig(format=format_error, datefmt='[%d/%m/%Y %H:%M:%S]', level=logging.ERROR)
+
 
 def create_table(base, engine):
     # cls[0] -> name
@@ -126,6 +126,8 @@ def insert_specieslink(session):
     count = session.query(DataSP).count()
     logging.info('count of specieslink data is %d' % count)
 
+    assert count == 55453
+
 
 def update_data_selected_george(session):
     filename = '../csv/george_data.csv'
@@ -156,8 +158,13 @@ def update_data_selected_george(session):
 
 def update_identifier_name(session):
     list_identifier_trusted = {
-        'full_name': ['Aline Vieira de Melo Silva', 'Carmen Lúcia Falcão Ichaso', 'Daniele Monteiro Ferreira', 'Daniel Ruschel', 'Elsie Franklin Guimarães', 'Eric J Tepe', 'Erika Erika Von Sohsten de Souza Medeiros', 'George Azevedo de Queiroz', 'Micheline Carvalho-Silva', 'Ricardo de la Merced Callejas Posada', 'Truman George Yuncker', 'William Trelease'],
-        'searched_name': ['Silva', 'Ichaso', 'Monteiro', 'Ruschel', 'Guimar', 'Tepe', 'Medeiros', 'Queiroz', 'Carvalho', 'Callejas', 'Yuncker', 'Trelease']
+        'full_name': ['Aline Vieira de Melo Silva', 'Carmen Lúcia Falcão Ichaso', 'Daniele Monteiro Ferreira',
+                      'Daniel Ruschel', 'Elsie Franklin Guimarães', 'Eric J Tepe',
+                      'Erika Erika Von Sohsten de Souza Medeiros', 'George Azevedo de Queiroz',
+                      'Micheline Carvalho-Silva', 'Ricardo de la Merced Callejas Posada', 'Truman George Yuncker',
+                      'William Trelease'],
+        'searched_name': ['Silva', 'Ichaso', 'Monteiro', 'Ruschel', 'Guimar', 'Tepe', 'Medeiros', 'Queiroz', 'Carvalho',
+                          'Callejas', 'Yuncker', 'Trelease']
     }
 
     count = session.query(TrustedIdentifier).count()
@@ -176,7 +183,8 @@ def update_identifier_name(session):
 
             for q in query:
                 logging.info('full name identifier: %s variation founded: %s' % (full_name_identifier, q.identified_by))
-                new_identifier_trusted = TrustedIdentifier(name=full_name_identifier, searched_name=target, value_founded=q.identified_by, trusted=False)
+                new_identifier_trusted = TrustedIdentifier(name=full_name_identifier, searched_name=target,
+                                                           value_founded=q.identified_by, trusted=False)
                 try:
                     session.add(new_identifier_trusted)
                     session.commit()
@@ -186,14 +194,57 @@ def update_identifier_name(session):
     count = session.query(TrustedIdentifier).count()
     logging.info('count identifiers inserted: %d' % count)
 
+    assert count == 340
 
-    count_variations_identifier_name_marked_trusted = session.query(TrustedIdentifier.value_founded) \
+    count = session.query(TrustedIdentifier.value_founded) \
         .filter(TrustedIdentifier.trusted) \
         .distinct() \
         .count()
 
-    # 187
-    logging.info('count of variations founded of identifiers name marked trusted: %d' % count_variations_identifier_name_marked_trusted)
+    logging.info('count of variations: %d' % count)
+
+    assert count == 187
+
+
+def insert_data_trusted_identifier(session):
+    list_identifier_trusted = {
+        'full_name': ['Aline Vieira de Melo Silva', 'Carmen Lúcia Falcão Ichaso', 'Daniele Monteiro Ferreira', 'Daniel Ruschel', 'Elsie Franklin Guimarães', 'Eric J Tepe', 'Erika Erika Von Sohsten de Souza Medeiros', 'George Azevedo de Queiroz', 'Micheline Carvalho-Silva', 'Ricardo de la Merced Callejas Posada', 'Truman George Yuncker', 'William Trelease'],
+        'searched_name': ['Silva', 'Ichaso', 'Monteiro', 'Ruschel', 'Guimar', 'Tepe', 'Medeiros', 'Queiroz', 'Carvalho', 'Callejas', 'Yuncker', 'Trelease']
+    }
+
+    query = session.query(TrustedIdentifier.value_founded) \
+        .filter(TrustedIdentifier.trusted) \
+        .distinct() \
+        .all()
+
+    list_variations_of_identifiers_trusted = [q.value_founded for q in query]
+
+    count_of_records_with_variations_identifier_name = session.query(DataSP) \
+        .filter(DataSP.identified_by.in_(list_variations_of_identifiers_trusted)) \
+        .count()
+
+    logging.info('count of records founded with variations of identifier name: %d' % count_of_records_with_variations_identifier_name)
+
+    assert count_of_records_with_variations_identifier_name == 13182
+
+    count_data_in_data_trusted_identifier = session.query(DataTrustedIdentifier).count()
+
+    if count_data_in_data_trusted_identifier == 0:
+        query = session.query(DataSP) \
+            .filter(DataSP.identified_by.in_(list_variations_of_identifiers_trusted)) \
+            .all()
+
+        for i, q in enumerate(query):
+            try:
+                new_data_of_identifier_trusted = create_data_trusted_identifier(q)
+                session.add(new_data_of_identifier_trusted)
+                session.commit()
+            except Exception as e:
+                session.rollback()
+
+    count_data_from_trusted_identifers = session.query(DataTrustedIdentifier).count()
+    print('count of records in table %s: %d' % (DataTrustedIdentifier.__tablename__, count_data_from_trusted_identifers))
+
 
 def main():
     base = get_base()
@@ -204,6 +255,7 @@ def main():
     insert_specieslink(session)
     update_data_selected_george(session)
     update_identifier_name(session)
+    insert_data_trusted_identifier(session)
 
     engine.dispose()
     session.close()
