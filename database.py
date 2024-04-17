@@ -10,9 +10,9 @@ from models import get_base, DataTrustedIdentifier
 from unaccent import unaccent
 
 cfg = {
-    'host': '192.168.0.144',
-    'user': os.environ['POSTGRE_USER'],
-    'password': os.environ['POSTGRE_PASSWORD']
+    'host': 'localhost',
+    'user': 'xandao',
+    'password': 'madu'
 }
 
 
@@ -33,13 +33,13 @@ def table_exists(engine, table_name):
     return True if table_name in show_tables(engine) else False
 
 
-def create_table(engine, table):
-    table_name = table.__tablename__
-
-    if not table_exists(engine, table_name):
-        base = get_base()
-        base.metadata.tables[table_name].create(bind=engine)
-        print('create table: %s' % table.__tablename__)
+# def create_table(engine, table):
+#     table_name = table.__tablename__
+#
+#     if not table_exists(engine, table_name):
+#         base = get_base()
+#         base.metadata.tables[table_name].create(bind=engine)
+#         print('create table: %s' % table.__tablename__)
 
 
 def show_tables(engine):
