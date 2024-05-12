@@ -1,6 +1,6 @@
 import itertools
 import scrapy
-import database as db
+from old import database as db
 
 from models import DataIdentifiersSelectedGeorge
 from scrapy.crawler import CrawlerProcess

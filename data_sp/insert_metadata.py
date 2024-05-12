@@ -2,9 +2,8 @@ import numpy as np
 import pandas as pd
 import re
 
-import database as db
-from database import get_columns_table
 from models import DataSP
+from sql import get_columns_table
 
 
 def check_if_type_column_is_int_or_float(columns_table):
@@ -80,7 +79,7 @@ def parse_row(info):
                   field_number=info['field_number'], year=info['year'], month=info['month'],
                   day=info['day'], event_time=info['event_time'],
                   continent_ocean=info['continent_ocean'], country=info['country'],
-                  state_province=info['state_province'], county=info['county'], locality=info['locality'],
+                  state_province=info['state_province'], county=info['ibge'], locality=info['locality'],
                   decimal_longitude=info['decimal_longitude'],
                   decimal_latitude=info['decimal_latitude'], verbatim_longitude=info['verbatim_longitude'],
                   verbatim_latitude=info['verbatim_latitude'],

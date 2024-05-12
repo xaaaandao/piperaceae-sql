@@ -1,8 +1,8 @@
-import database as db
+from old import database as db
 
 import requests
 
-from models import County
+from old.models import County
 
 
 def get_key(json, key):

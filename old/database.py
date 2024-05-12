@@ -10,16 +10,7 @@ from models import DataIdentifiersSelectedGeorge
 from unaccent import unaccent
 
 
-def connect(echo=True, host='localhost', user=os.environ['myuser_pg'], password=os.environ['mypwd_pg'], port='5432', database='herbario'):
-    try:
-        url = 'postgresql+psycopg2://%s:%s@%s:%s/%s' % (user, password, host, port, database)
-        engine = sa.create_engine(url, echo=echo, pool_pre_ping=True)
-        session = sqlalchemy.orm.sessionmaker(bind=engine)
-        session.configure(bind=engine)
-        if engine.connect():
-            return engine, session()
-    except Exception as e:
-        print(e)
+
 
 
 def update_country_trusted(session, query):

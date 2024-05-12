@@ -2,9 +2,9 @@ import pandas as pd
 import re
 import sqlalchemy as sa
 
-import database as db
+from old import database as db
 
-from models import DataIdentifiersSelectedGeorge
+from old.models import DataIdentifiersSelectedGeorge
 
 list_unencoded_characters = {
     'error': ['Ã¡', 'Ãº', 'Ã', 'Ã³', 'Ã±', 'Ã©'],
@@ -18,7 +18,7 @@ list_variations_br = ['Brasil', 'BRASIL', 'Brasil/Bolivia', 'Brasilia', 'brazil'
 def main():
     engine, session = db.connect()
 
-    df = pd.read_csv('../csv/list_genus_species_correct.csv', sep=';', index_col=None, header=0).astype(str)
+    df = pd.read_csv('../../csv/list_genus_species_correct.csv', sep=';', index_col=None, header=0).astype(str)
     df = df.replace('nan', None)
 
     # below genus level

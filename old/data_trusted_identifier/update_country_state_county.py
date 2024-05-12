@@ -1,7 +1,7 @@
 import sqlalchemy as sa
 
-import database as db
-from models import DataIdentifiersSelectedGeorge
+from old import database as db
+from old.models import DataIdentifiersSelectedGeorge
 
 list_unencoded_characters = {
     'error': ['Ã¡', 'Ãº', 'Ã', 'Ã³', 'Ã±', 'Ã©'],

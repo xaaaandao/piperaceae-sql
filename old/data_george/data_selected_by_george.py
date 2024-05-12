@@ -1,7 +1,7 @@
 import pandas as pd
 
-import database as db
-from models import DataSP
+from old import database as db
+from old.models import DataSP
 
 
 def update_record_data_sp(row, session):
@@ -30,7 +30,7 @@ def count_records_selected_by_george(session):
 def main():
     engine, session = db.connect()
 
-    filename = '../csv/george_data.csv'
+    filename = '../../csv/george_data.csv'
     df = pd.read_csv(filename, sep=';', low_memory=False, skipinitialspace=True)
 
     if count_records_selected_by_george(session) == 0:

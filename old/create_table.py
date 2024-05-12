@@ -6,12 +6,7 @@ import database as db
 from models import *
 
 
-def show_tables(engine):
-    return sa.inspect(engine).get_table_names()
 
-
-def table_exists(engine, table_name):
-    return True if table_name in show_tables(engine) else False
 
 
 def main():

@@ -1,9 +1,9 @@
 import os
 import pathlib
 
-import database as db
+from old import database as db
 
-from models import Image, DataIdentifierSelectedGeorge
+from old.models import Image, DataIdentifierSelectedGeorge
 
 
 def add_seq_each_image(session):

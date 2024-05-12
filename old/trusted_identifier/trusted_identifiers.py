@@ -1,7 +1,7 @@
 import pandas as pd
 
-import database as db
-from models import TrustedIdentifier, DataSP, DataIdentifiersSelectedGeorge, create_data_trusted_identifier
+from old import database as db
+from old.models import TrustedIdentifier, DataSP, DataIdentifiersSelectedGeorge, create_data_trusted_identifier
 
 '''
     To identifier Aline Vieira de Melo Silva was searched data that contains Silva in identified_by column
@@ -45,7 +45,7 @@ def main():
 
 
 def insert_data_trusted_identifiers(session):
-    df = pd.read_csv('trusted_identifier.csv', sep=';', lineterminator='\n')
+    df = pd.read_csv('../../csv/trusted_identifiers.csv', sep=';', lineterminator='\n')
     n_rows = len(list(df.iterrows()))
     for i, (idx, row) in enumerate(df.iterrows()):
         print('%d/%d', (i, n_rows))
