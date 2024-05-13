@@ -54,6 +54,8 @@ def get_base():
     return Base
 
 
+
+
 class DataSP(Base):
     __tablename__ = 'data_sp'
 
@@ -110,7 +112,8 @@ class DataSP(Base):
     barcode = sa.Column(sa.String, nullable=True)
     imagecode = sa.Column(sa.String, nullable=True)
     geo_flag = sa.Column(sa.String, nullable=True)
-    george = sa.Column(sa.Boolean, nullable=True)
+    george_data = sa.orm.relationship("GeorgeData", backref="data_sp", uselist=False)
+    # george = sa.Column(sa.Boolean, nullable=True)
 
     def __repr__(self):
         return 'DataSP(seq=%s, modified=%s, institution_code=%s, collection_code=%s, catalog_number=%s, ' \
@@ -126,6 +129,12 @@ class DataSP(Base):
                'occurrence_remarks=%s, barcode=%s, imagecode=%s, geo_flag=%s)'
 
 
+class GeorgeData(Base):
+    __tablename__ = 'george_data'
+
+    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
+    seq = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('data_sp.seq'), nullable=False)
+
 # County is muncipio, condado
 class County(Base):
     __tablename__ = 'county'
@@ -135,9 +144,9 @@ class County(Base):
     uf = sa.Column(sa.String, nullable=True)
     state = sa.Column(sa.String, nullable=True)
     regiao = sa.Column(sa.String, nullable=True)
-
-    def __repr__(self):
-        return 'County(id=%s, county=%s, uf=%s, state=%s, regiao=%s)'
+    #
+    # def __repr__(self):
+    #     return 'County(id=%s, county=%s, uf=%s, state=%s, regiao=%s)'
 
 
 class TrustedIdentifier(Base):

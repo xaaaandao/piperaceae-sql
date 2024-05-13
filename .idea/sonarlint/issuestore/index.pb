@@ -1,46 +1,78 @@
 
-@
-csv/original.csv,0/f/0fdb6da3a4f2dd0bda480ed767f0ff8e0c934bf2
-:
-
-Script.sql,d/9/d9faf02975305e5b41eabc00cbf47fa6da931246
-Q
-!dataset_br/dataset_regional.ipynb,8/3/839ac224b80262a7de9392bdcec737e163f98de1
-L
-dataset_br/images_invalid.py,0/c/0cd3dcda177ba152138970cb2bf5d976c323831d
-;
-TSVector.py,c/e/ce621a6d3cdf2e3a2191a683914cec6f22016841
 ;
 unaccent.py,3/3/3353fa4edc8a10f8c59ca82328c227b5bfde6e69
-E
-dataset_br/main.ipynb,e/5/e57ad6c286590731fa186029740b107065857f22
-K
-dataset_br/dataset_br.ipynb,d/5/d53740baa4619744dbfab663a7ff7553beb1737d
-:
-
-main.ipynb,b/1/b1094ba51eacb5dd252316aae3bf58b30cc641cb
-\
-,sql/data_trusted_identifier_202303192309.sql,d/8/d8dbdfc3965d5a4136ed1dade1fa34b9bee1e26f
 :
 
 .gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
-K
-dataset_br/dataset_pr.ipynb,9/1/9132d44ad1a6ba19cee25ab2f13d0386e7e54e82
-O
-sql/info_image_202303192309.sql,a/f/af0f0678ab90f6bba3771d8e7782c24d150dcff1
-W
-'sql/trusted_identifier_202303192309.sql,e/5/e5f004622b97875d6b54ee973a345bcc0ef2e7ec
-K
-sql/county_202303192310.sql,9/7/97a94e4d2116daed4855252279cb430ebec90c01
-L
-sql/data_sp_202303192309.sql,e/2/e240a424e2e9d57749da6759a1644e324b51ba71
+9
+	README.md,8/e/8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
+7
+main.py,f/1/f1bdda93d9a278e358509d498e17d97764c1fb29
+A
+county/main.ipynb,0/e/0e28468d5560ee0164a36e0335e763b4b2fb99fc
+?
+old/database.py,6/d/6db830c2ce919c0e7d981f5901f6a05953f172a1
+9
+	models.py,8/5/85f64e80ba345158acc186d4505f039d4f21420f
+9
+	county.py,a/8/a86d061e814f735da518fbbc1f967133bc93c879
 6
 api.py,a/3/a3fe9bb45db04dc8336d6f42e3c76ce9bde3ae96
+@
+csv/original.csv,0/f/0fdb6da3a4f2dd0bda480ed767f0ff8e0c934bf2
 <
 dataframe.py,2/d/2d605add6fec6de1232bdacb5312c09bf22d4dd2
-V
-&dataset_br/csv_classes_and_count.ipynb,0/d/0dd753a3e04e0e4e990f922dadd4730f4fa2fc71
-9
-	tables.py,6/3/6368df74af5097471d7bcf1fbf1008cb234d083a
+?
+species_link.py,e/3/e3c337c64c4a4fe275fe21583ccc65ada04efa62
 ;
 database.py,1/2/12d0bfc8adac6eee15262b728a538821e35c98c9
+6
+sql.py,d/0/d01505910d71cd099e4934c4ce8d8ccc4ec8ac8e
+D
+old/br_dataset.ipynb,5/2/529cc71aa71b7505cd8573275934ed0af7cc5734
+w
+G.idea/sonarlint/issuestore/0/f/0fdb6da3a4f2dd0bda480ed767f0ff8e0c934bf2,0/c/0cd336ca52c561dd52fc8febff2be4440f96cb96
+m
+=old/data_trusted_identifier/update_country_state_county.ipynb,0/2/0224c6a665ba6972f61aafc31a03545d4a63ce2a
+_
+/old/data_trusted_identifier/records_updated.csv,2/3/23bcf969562b35a7fac9879c818be5bd7d358ff7
+S
+#.idea/sonarlint/issuestore/index.pb,9/f/9fe84ebb15faf917b7def6236dba604453cc61e0
+F
+old/plots/krona/run.sh,3/0/3025d4603c22c596dc7e5a3681008b202f362a5e
+H
+old/plots/krona/test.txt,b/e/beaa28b577c8dca53edab805da5e705ecfc1ada8
+I
+old/plots/long_tail.ipynb,b/5/b5ac3021aa407015596724ec6421cc155ff39fa5
+W
+'old/plots/coverage_image_by_state.ipynb,b/8/b802043d8670580db4d1b2095072c77060ff4393
+J
+old/plots/krona/index.html,b/a/ba5eb5471bf3ece600218efdc2eb1c1786e4a6e5
+U
+%old/plots/count_images_by_state.ipynb,b/7/b7e28758906f33b3faa6368fcbaef519467e03a3
+?
+old/TSVector.py,1/b/1bae0c04bae2e62ee76161e1b28ddffe46a22527
+Q
+!old/trusted_identifier/main.ipynb,e/a/ea20eb12f05b8fbc02f4fbf38039faa3d1093f17
+_
+/old/data_sp/identifiers_trusted_by_george.ipynb,f/1/f1561e3a731f5538f134f84bb1cf6bfb33e23859
+F
+old/data_sp/main.ipynb,4/4/44ac5ef54bfb02c92763363f24444c500d15b909
+I
+old/regions_dataset.ipynb,c/a/ca6709c03d927447e4c80763a17ed2c5d34abe43
+=
+old/images.py,1/0/10866b258f9ad86ff8a2441a4186ad3d61321c3f
+D
+old/image/main.ipynb,f/2/f20c2bd9b87faac28285cce278096db63939411f
+D
+old/pr_dataset.ipynb,d/1/d18ea4ccbaecde8f4f9c6c6c9dabcd28a1500520
+U
+%old/data_trusted_identifier/scrapy.py,d/e/de5985c7f8c0a03e66e2c59acda18bbca601a6fb
+V
+&old/data_trusted_identifier/main.ipynb,3/5/355c0d6ed0c93f14b8f84195dea1ebd4fb53a341
+J
+old/data_george/main.ipynb,a/5/a5174f5844fbe88e3db237bdd5bb2f2dbf4b7444
+o
+?old/data_trusted_identifier/update_genus_specific_epithet.ipynb,6/0/6073a9ac8bb4f04131159ada54f447f81fdd3508
+9
+	george.py,f/e/fe8f39af221533617f4b170256c88b4d594a9995

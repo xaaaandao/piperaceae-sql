@@ -1,4 +1,6 @@
 import itertools
+
+import database
 import scrapy
 import database as db
 
@@ -62,7 +64,7 @@ class SpeciesLink(scrapy.Spider):
 
 
 def main():
-    engine, session = db.connect()
+    engine, session = database.connect()
     engine.echo = False
 
     query = session.query(DataTrustedIdentifier) \
