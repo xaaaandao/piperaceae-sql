@@ -4,10 +4,12 @@ import pandas as pd
 import re
 import sys
 
+from models import Exsiccata
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath('dataframe.py'))))
 
 # from database import get_columns_table
-from models import DataSP
+# from models import DataSP
 
 
 def get_columns_table(table):
@@ -55,7 +57,7 @@ def replace_nan_to_null(dataframe):
 
 
 def replace_values_not_numeric(dataframe):
-    for column in [*get_columns_numeric(dataframe, DataSP)]:
+    for column in [*get_columns_numeric(dataframe, Exsiccata)]:
         dataframe[column] = pd.to_numeric(getattr(dataframe, column), errors='coerce').fillna(-1)
     return dataframe
 
