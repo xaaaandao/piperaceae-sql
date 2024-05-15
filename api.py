@@ -4,7 +4,7 @@ import requests
 def get_data_api():
     try:
         url = 'https://servicodados.ibge.gov.br/api/v1/localidades/municipios'
-        return requests.get(url)
+        return requests.get(url, verify=False)
     except Exception:
         raise requests.exceptions.RequestException('error in request')
 

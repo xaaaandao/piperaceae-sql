@@ -11,25 +11,11 @@ def get_base():
     return Base
 
 
-state_county = sa.Table(
-    'state_county',
-    Base.metadata,
-    sa.Column('state_id', sa.ForeignKey('state.id')),
-    sa.Column('county_id', sa.ForeignKey('county.id')),
-)
-
 exsiccata_level = sa.Table(
     'exsiccata_level',
     Base.metadata,
     sa.Column('exsiccata_id', sa.ForeignKey('exsiccata.seq')),
     sa.Column('level_id', sa.ForeignKey('level.id')),
-)
-
-exsiccata_local = sa.Table(
-    'exsiccata_local',
-    Base.metadata,
-    sa.Column('exsiccata_id', sa.ForeignKey('exsiccata.seq')),
-    sa.Column('local_id', sa.ForeignKey('local.id')),
 )
 
 exsiccata_identifier = sa.Table(
@@ -45,9 +31,11 @@ class County(Base):
 
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     name = sa.Column(sa.String, nullable=True)
+    state = sa.orm.relationship('State', back_populates='county')
+    state_id = sa.Column(sa.Integer, sa.ForeignKey('state.id'))
 
     def __repr__(self):
-        return 'County(name=%s)'
+        return 'County(name=%s, state_id=%s)'
 
 
 class State(Base):
@@ -57,10 +45,10 @@ class State(Base):
     name = sa.Column(sa.String, nullable=True, unique=True)
     uf = sa.Column(sa.String, nullable=True, unique=True)
     region = sa.Column(sa.String, nullable=True)
-    counties: sa.orm.Mapped[List['County']] = sa.orm.relationship(secondary=state_county)
+    county = sa.orm.relationship('County', back_populates='state')
 
     def __repr__(self):
-        return 'State(uf=%s, name=%s, region=%s)'
+        return 'State(uf=%s, name=%s, region=%s, county_id=%s)'
 
 
 class Local(Base):
@@ -83,11 +71,22 @@ class Local(Base):
     maximum_elevation_in_meters = sa.Column(sa.Double, nullable=True)
     minimum_depth_in_meters = sa.Column(sa.Double, nullable=True)
     maximum_depth_in_meters = sa.Column(sa.Double, nullable=True)
-
-    # exsiccatas: sa.orm.Mapped[List['ExsiccataLocal']] = sa.orm.relationship(back_populates='local')
+    local_trusted: sa.orm.Mapped['LocalTrusted'] = sa.orm.relationship(back_populates='local')
+    exsiccata = sa.orm.relationship('Exsiccata', back_populates='local')
+    exsiccata_id = sa.Column(sa.Integer, sa.ForeignKey('exsiccata.seq'))
 
     def __repr__(self):
         return 'Local(event_time=%s, continent_ocean=%s, country=%s, state_province=%s, county=%s, locality=%s, decimal_longitude=%s, decimal_latitude=%s, verbatim_longitude=%s, verbatim_latitude=%s, coordinate_precision=%s, bounding_box=%s, minimum_elevation_in_meters=%s, maximum_elevation_in_meters=%s, minimum_depth_in_meters=%s, maximum_depth_in_meters=%s)'
+
+
+class LocalTrusted(Base):
+    __tablename__ = 'local_trusted'
+    id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    country = sa.Column(sa.String, nullable=True)
+    state_province = sa.Column(sa.String, nullable=True)
+    county = sa.Column(sa.String, nullable=True)
+    local_id: sa.orm.Mapped[int] = sa.orm.mapped_column(sa.ForeignKey("local.id"))
+    local: sa.orm.Mapped['Local'] = sa.orm.relationship(back_populates="local_trusted")
 
 
 class Exsiccata(Base):
@@ -116,8 +115,8 @@ class Exsiccata(Base):
     imagecode = sa.Column(sa.String, nullable=True)
     geo_flag = sa.Column(sa.String, nullable=True)
     levels: sa.orm.Mapped[List['Level']] = sa.orm.relationship(secondary=exsiccata_level)
-    locals: sa.orm.Mapped[List['Local']] = sa.orm.relationship(secondary=exsiccata_local)
     identifiers: sa.orm.Mapped[List['Identifier']] = sa.orm.relationship(secondary=exsiccata_identifier)
+    local = sa.orm.relationship('Local', back_populates='exsiccata')
     george_data: sa.orm.Mapped['GeorgeData'] = sa.orm.relationship(back_populates='exsiccata')
 
     def __repr__(self):
@@ -164,3 +163,22 @@ class GeorgeData(Base):
     id: sa.orm.Mapped[int] = sa.orm.mapped_column(primary_key=True)
     exsiccata_id: sa.orm.Mapped[int] = sa.orm.mapped_column(sa.ForeignKey("exsiccata.seq"))
     exsiccata: sa.orm.Mapped['Exsiccata'] = sa.orm.relationship(back_populates="george_data")
+
+
+class TrustedIdentifier(Base):
+    __tablename__ = 'trusted_identifier'
+
+    id: sa.orm.Mapped[int] = sa.orm.mapped_column(primary_key=True, autoincrement=True)
+    fullname = sa.Column(sa.String, nullable=True)
+    search = sa.Column(sa.String, nullable=True)
+    trusted_identifier_selected = sa.orm.relationship('TrustedIdentifierSelected', back_populates='trusted_identifier')
+
+
+class TrustedIdentifierSelected(Base):
+    __tablename__ = 'trusted_identifier_selected'
+
+    id: sa.orm.Mapped[int] = sa.orm.mapped_column(primary_key=True, autoincrement=True)
+    value_founded = sa.Column(sa.String, nullable=True)
+    selected = sa.Column(sa.Boolean, nullable=True)
+    trusted_identifier = sa.orm.relationship('TrustedIdentifier', back_populates='trusted_identifier_selected')
+    trusted_identifier_id = sa.Column(sa.Integer, sa.ForeignKey('trusted_identifier.id'))

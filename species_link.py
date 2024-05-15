@@ -37,11 +37,10 @@ def insert_data_specieslink(session, filename='./csv/original.csv'):
         df = preprocess(df)
         for idx, row in df.iterrows():
             exsiccata = create_exsiccata(row)
+            insert_local(row, exsiccata, session)
             level = insert_level(row, session)
-            local = insert_local(row, session)
             identifier = insert_identifier(row, session)
             exsiccata.levels.append(level)
-            exsiccata.locals.append(local)
             exsiccata.identifiers.append(identifier)
             insert(exsiccata, session)
 
