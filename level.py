@@ -1,5 +1,6 @@
 import logging
 
+import pandas as pd
 import sqlalchemy
 
 from models import Level
@@ -36,3 +37,8 @@ def insert_level(data, session):
 
     return l
 
+
+def update_level(session, filename='./csv/2list_genus_species_correct.csv'):
+    df = pd.read_csv(filename, sep=';', index_col=False, header=0)
+    for idx, row in df.iterrows():
+        pass

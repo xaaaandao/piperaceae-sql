@@ -40,7 +40,7 @@ def create_local(data,exsiccata):
 
 
 def create_local_trusted(local):
-    return LocalTrusted(local_id=local)
+    return LocalTrusted(local_id=local.id)
 
 
 def insert_local(data, exsiccata, session):
@@ -57,20 +57,25 @@ def update_county(session):
 
     for c in counties:
         query = session.query(Local) \
-            .filter(Local.county.__eq__(unaccent(c.name))) \
+            .filter(sa.or_(Local.county.__eq__(c.name),
+                           Local.county.__eq__(c.name.lower()),
+                           Local.county.__eq__(c.name.upper()),
+                           Local.county.__eq__(unaccent(c.name)),
+                           Local.county.__eq__(unaccent(c.name.lower())),
+                           Local.county.__eq__(unaccent(c.name.lower())))) \
             .all()
 
         locals_id = [q.id for q in query]
-        # session.query(exsiccata_local) \
-        #     .filter(exsiccata_local.c.local_id.in_(locals_id)) \
-        #     .update({exsiccata_local.c.county: c.name}, synchronize_session=False)
-        # session.commit()
+        session.query(LocalTrusted) \
+            .filter(LocalTrusted.local_id.in_(locals_id)) \
+            .update({LocalTrusted.county: c.name}, synchronize_session=False)
+        session.commit()
 
 
 def update_local(session):
     update_country(session)
-    # update_state(session)
-    # update_county(session)
+    update_state(session)
+    update_county(session)
 
 
 def update_state(session):
@@ -79,16 +84,34 @@ def update_state(session):
         .all()
 
     for s in states:
-        query = session.query(Local) \
-            .filter(sa.or_(Local.state_province.__eq__(unaccent(s.name.lower())),
-                           Local.state_province.__eq__(unaccent(s.uf.lower())))) \
-            .all()
-
+        query = find_state_uf(s, session)
         locals_id = [q.id for q in query]
-        # session.query(exsiccata_local) \
-        #     .filter(exsiccata_local.c.local_id.in_(locals_id)) \
-        #     .update({exsiccata_local.c.state_province: s.name}, synchronize_session=False)
-        # session.commit()
+
+        query = find_state(s, session)
+        locals_id = locals_id + [q.id for q in query]
+
+        session.query(LocalTrusted) \
+            .filter(LocalTrusted.local_id.in_(locals_id)) \
+            .update({LocalTrusted.state_province: s.name}, synchronize_session=False)
+        session.commit()
+
+
+def find_state_uf(s, session):
+    return session.query(Local) \
+        .filter(sa.or_(Local.state_province.__eq__(s.uf),
+                       Local.state_province.__eq__(s.uf.lower()))) \
+        .all()
+
+
+def find_state(s, session):
+    return session.query(Local) \
+        .filter(sa.or_(Local.state_province.__eq__(s.name),
+                       Local.state_province.__eq__(s.name.upper()),
+                       Local.state_province.__eq__(s.name.lower()),
+                       Local.state_province.__eq__(unaccent(s.name)),
+                       Local.state_province.__eq__(unaccent(s.name.upper())),
+                       Local.state_province.__eq__(unaccent(s.name.lower())))) \
+        .all()
 
 
 def update_country(session):
@@ -97,7 +120,6 @@ def update_country(session):
     query = session.query(Local.id).filter(Local.country.in_(br_variations)).all()
 
     locals_id = [q[0] for q in query]
-
     session.query(LocalTrusted) \
         .filter(LocalTrusted.local_id.in_(locals_id)) \
         .update({LocalTrusted.country: 'Brasil'}, synchronize_session=False)

@@ -80,9 +80,15 @@ o
 level.py,e/0/e0a1d1a0596ee8293b6db912133e4c3d3beb3fa4
 K
 csv/trusted_identifiers.csv,4/0/40444148af629b0f6a9958c3749b93b49007b44b
-d
-4old/sql/sql_files/update_true_trusted_identifier.sql,5/7/57c3bc151aa0c32dc60808b502ca5887d61674ce
-e
-5old/sql/sql_files/trusted_identifier_202303192309.sql,7/3/73672d0c0c697c6af672d5ecda57a9d06fde565f
 9
 	csv/a.csv,c/c/cc08d11d8335a0dcb847a89ce8e88cae52572598
+9
+	county.py,a/8/a86d061e814f735da518fbbc1f967133bc93c879
+R
+"csv/list_genus_species_correct.csv,b/5/b528c0f4a584b3dfa152ecaf9fe639fb79482d52
+C
+csv/george_data.csv,8/7/871b5b094d5081fabc983876d183092600afef6d
+S
+#csv/2list_genus_species_correct.csv,4/3/438326576c3d9a9422a08d7862d920227ff13fd6
+E
+trusted_identifier.py,8/f/8f99120a19247e581f5cea0161ba816e4d7568cf
