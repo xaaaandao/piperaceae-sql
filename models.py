@@ -15,6 +15,7 @@ exsiccata_level = sa.Table(
     'exsiccata_level',
     Base.metadata,
     sa.Column('exsiccata_id', sa.ForeignKey('exsiccata.seq')),
+    sa.Column('level_valid_id', sa.ForeignKey('level_valid.id')),
     sa.Column('level_id', sa.ForeignKey('level.id')),
 )
 
@@ -126,6 +127,7 @@ class Exsiccata(Base):
     imagecode = sa.Column(sa.String, nullable=True)
     geo_flag = sa.Column(sa.String, nullable=True)
     levels: sa.orm.Mapped[List['Level']] = sa.orm.relationship(secondary=exsiccata_level)
+    levels_valid: sa.orm.Mapped[List['LevelValid']] = sa.orm.relationship(secondary=exsiccata_level)
     datasets: sa.orm.Mapped[List['Dataset']] = sa.orm.relationship(secondary=exsiccata_dataset)
     identifiers: sa.orm.Mapped[List['Identifier']] = sa.orm.relationship(secondary=exsiccata_identifier)
     local = sa.orm.relationship('Local', back_populates='exsiccata')
@@ -164,7 +166,7 @@ class Level(Base):
     infraspecific_epithet = sa.Column(sa.String, nullable=True)
     scientific_name = sa.Column(sa.String, nullable=True)
     scientific_name_authorship = sa.Column(sa.String, nullable=True)
-    level_valid: sa.orm.Mapped['LevelValid'] = sa.orm.relationship(back_populates='level')
+    # level_valid: sa.orm.Mapped['LevelValid'] = sa.orm.relationship(back_populates='level')
 
     def __repr__(self):
         return 'Level(kingdom=%s, phylum=%s, classe=%s, order=%s, family=%s, genus=%s, specific_epithet=%s, infraspecific_epithet=%s, scientific_name=%s, scientific_name_authorship=%s)'
@@ -210,5 +212,5 @@ class LevelValid(Base):
     infraspecific_epithet = sa.Column(sa.String, nullable=True)
     scientific_name = sa.Column(sa.String, nullable=True)
     scientific_name_authorship = sa.Column(sa.String, nullable=True)
-    level_id: sa.orm.Mapped[int] = sa.orm.mapped_column(sa.ForeignKey("level.id"))
-    level: sa.orm.Mapped['Level'] = sa.orm.relationship(back_populates="level_valid")
+    # level_id: sa.orm.Mapped[int] = sa.orm.mapped_column(sa.ForeignKey("level.id"))
+    # level: sa.orm.Mapped['Level'] = sa.orm.relationship(back_populates="level_valid")

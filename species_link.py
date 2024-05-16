@@ -4,7 +4,7 @@ import pandas as pd
 
 from dataframe import rename_header_dataframe, preprocess
 from identifier import insert_identifier
-from level import insert_level
+from level import insert_level, has_level_valid, update_level_valid
 from local.local import insert_local
 from models import Exsiccata
 from sql import is_query_empty, insert
@@ -41,13 +41,11 @@ def insert_data_specieslink(session, filename='./csv/original.csv'):
     for idx, row in df.iterrows():
         exsiccata = create_exsiccata(row)
         level = insert_level(row, session)
+        update_level_valid(session)
+        level_valid = has_level_valid(row, session)
         identifier = insert_identifier(row, session)
         exsiccata.levels.append(level)
+        exsiccata.levels_valid.append(level_valid)
         exsiccata.identifiers.append(identifier)
         insert(exsiccata, session)
         insert_local(row, exsiccata, session)
-
-
-
-
-

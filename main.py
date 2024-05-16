@@ -28,12 +28,12 @@ def main():
 
     create_table(base, engine)
     insert_counties(session)
-    insert_data_specieslink(session)
-    insert_data_george(session)
-    insert_trusted_identifier(session)
-    update_local(session)
-    update_level_valid(session)
     insert_level_valid(session)
+    insert_data_specieslink(session)
+    # insert_data_george(session)
+    # insert_trusted_identifier(session)
+    # update_local(session)
+    # update_level_valid(session)
 
     engine.dispose()
     session.close()
