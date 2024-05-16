@@ -1,0 +1,130 @@
+<mxfile host="app.diagrams.net" modified="2024-05-15T20:11:22.537Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="jVjz7ucrajmMnhTwocU3" version="24.4.2" type="device">
+  <diagram name="Página-1" id="N9xdJlJVKoobMMOCDbPu">
+    <mxGraphModel dx="1434" dy="754" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ZU76k9V1delNcHxAxiqw-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="ZU76k9V1delNcHxAxiqw-2" target="ZU76k9V1delNcHxAxiqw-3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-2" value="Início" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="40" y="80" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="ZU76k9V1delNcHxAxiqw-3" target="ZU76k9V1delNcHxAxiqw-4" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-3" value="Inserir cidades" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="40" y="190" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="ZU76k9V1delNcHxAxiqw-4" target="ZU76k9V1delNcHxAxiqw-7" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-4" value="Inserir dados das exsicatas" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="40" y="300" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-7" value="Marcar os dados selecionados pelo George" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="30" y="420" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-11" value="Atualizar local de coleta" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="30" y="570" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-45" value="Início" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;labelBackgroundColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="414" y="20" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-46" value="Fim" style="rounded=1;whiteSpace=wrap;html=1;fontSize=16;labelBackgroundColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="620" y="20" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-16" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;" parent="1" source="ZU76k9V1delNcHxAxiqw-12" target="ZU76k9V1delNcHxAxiqw-14" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-12" value="Atualizar país" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;labelBackgroundColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="410" y="175" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-19" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;" parent="1" source="ZU76k9V1delNcHxAxiqw-14" target="ZU76k9V1delNcHxAxiqw-18" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-34" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;" parent="1" source="ZU76k9V1delNcHxAxiqw-14" target="ZU76k9V1delNcHxAxiqw-23" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-14" value="Existe alguma variação da palavra Brasil?" style="rhombus;whiteSpace=wrap;html=1;fontSize=16;spacingLeft=10;spacingRight=10;labelBackgroundColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="596" y="100" width="230" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=none;" parent="1" source="ZU76k9V1delNcHxAxiqw-18" target="ZU76k9V1delNcHxAxiqw-23" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1010" y="205" />
+              <mxPoint x="1010" y="320" />
+              <mxPoint x="711" y="320" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-18" value="Atualiza" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;labelBackgroundColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="870" y="175" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;" parent="1" source="ZU76k9V1delNcHxAxiqw-21" target="ZU76k9V1delNcHxAxiqw-23" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-21" value="Atualizar estado" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;labelBackgroundColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="410" y="425" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-22" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;" parent="1" source="ZU76k9V1delNcHxAxiqw-23" target="ZU76k9V1delNcHxAxiqw-24" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=none;" parent="1" source="ZU76k9V1delNcHxAxiqw-23" target="ZU76k9V1delNcHxAxiqw-26" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-23" value="Existe alguma abreviação, no campo estado?&lt;br&gt;ex.: seq=11.820" style="rhombus;whiteSpace=wrap;html=1;fontSize=16;spacingLeft=30;spacingRight=30;labelBackgroundColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="596" y="350" width="230" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;labelBackgroundColor=none;" parent="1" source="ZU76k9V1delNcHxAxiqw-24" target="ZU76k9V1delNcHxAxiqw-26" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1010" y="455" />
+              <mxPoint x="1010" y="580" />
+              <mxPoint x="711" y="580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-24" value="Atualiza" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;labelBackgroundColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="870" y="425" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-29" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;" parent="1" source="ZU76k9V1delNcHxAxiqw-26" target="ZU76k9V1delNcHxAxiqw-28" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-39" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;" parent="1" source="ZU76k9V1delNcHxAxiqw-26" target="ZU76k9V1delNcHxAxiqw-36" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-26" value="Existe algum estado, com nome errado?&lt;br&gt;ex.: seq=14.507" style="rhombus;whiteSpace=wrap;html=1;fontSize=16;spacingLeft=30;spacingRight=30;labelBackgroundColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="596" y="630" width="230" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;labelBackgroundColor=none;" parent="1" source="ZU76k9V1delNcHxAxiqw-28" target="ZU76k9V1delNcHxAxiqw-36" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1010" y="735" />
+              <mxPoint x="1010" y="860" />
+              <mxPoint x="711" y="860" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-28" value="Atualiza" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;labelBackgroundColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="870" y="705" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-41" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;" parent="1" source="ZU76k9V1delNcHxAxiqw-36" target="ZU76k9V1delNcHxAxiqw-40" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-36" value="Existe algum estado, com nome errado?&lt;br&gt;ex.: seq=14.507" style="rhombus;whiteSpace=wrap;html=1;fontSize=16;spacingLeft=30;spacingRight=30;labelBackgroundColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="596" y="920" width="230" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-40" value="Atualiza" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;labelBackgroundColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="880" y="995" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-43" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;" parent="1" source="ZU76k9V1delNcHxAxiqw-42" target="ZU76k9V1delNcHxAxiqw-36" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZU76k9V1delNcHxAxiqw-42" value="Atualizar cidade" style="rounded=0;whiteSpace=wrap;html=1;fontSize=16;labelBackgroundColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="414" y="995" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
