@@ -4,8 +4,8 @@ import logging
 from county import insert_counties
 from database import connect, create_table
 from george import insert_data_george
-from level import update_level
-from local import update_local
+from level import insert_level_valid, update_level_valid
+from local.local import update_local
 from models import get_base
 from species_link import insert_data_specieslink
 from trusted_identifier import insert_trusted_identifier
@@ -32,7 +32,8 @@ def main():
     insert_data_george(session)
     insert_trusted_identifier(session)
     update_local(session)
-    update_level(session)
+    update_level_valid(session)
+    insert_level_valid(session)
 
     engine.dispose()
     session.close()

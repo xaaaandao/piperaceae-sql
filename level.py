@@ -2,9 +2,10 @@ import logging
 
 import pandas as pd
 import sqlalchemy
+import sqlalchemy as sa
 
-from models import Level
-from sql import insert
+from models import Level, LevelValid, exsiccata_level
+from sql import insert, is_query_empty
 
 
 def exists_level(data, session):
@@ -38,7 +39,61 @@ def insert_level(data, session):
     return l
 
 
-def update_level(session, filename='./csv/2list_genus_species_correct.csv'):
-    df = pd.read_csv(filename, sep=';', index_col=False, header=0)
+def insert_level_valid(session, filename='./csv/2list_genus_species_correct.csv'):
+    count = session.query(LevelValid).count()
+    if not is_query_empty(count):
+        logging.info('count level valid is %d', count)
+        return count
+
+    df = pd.read_csv(filename, sep=';', index_col=False, header=0, encoding='utf-8')
     for idx, row in df.iterrows():
-        pass
+        level = session.query(Level) \
+            .filter(sa.and_(Level.genus.__eq__(row['genus']),
+                            Level.specific_epithet.__eq__(row['specific_epithet']),
+                            sa.or_(Level.infraspecific_epithet.__eq__(row['infraspecific_epithet'].replace('f. ', '')),
+                                   Level.scientific_name.__eq__(row['scientific_name_authorship_trusted']))))
+
+        if level:
+            l = LevelValid(kingdom=row['kingdom_trusted'], phylum=row['phylum_trusted'], order=row['order_trusted'],
+                           classe=row['classe_trusted'],
+                           family=row['family_trusted'], genus=row['genus_trusted'],
+                           specific_epithet=row['specific_epithet_trusted'],
+                           infraspecific_epithet=row['infraspecific_epithet_trusted'],
+                           scientific_name_authorship=row['scientific_name_authorship_trusted'],
+                           level_id=level.id)
+            insert(l, session)
+
+
+def update_level_valid(session):
+    remove_string_infraspecific_epithet(session)
+    remove_char_scientific_name_authorship(session)
+
+
+def remove_string_infraspecific_epithet(session):
+    invalid_characteres = ['f. ']  # , 'var. ']
+    for column in [LevelValid.infraspecific_epithet, LevelValid.infraspecific_epithet_valid]:
+        for char in invalid_characteres:
+            value = sa.func.replace(column, char, '')
+            session.query(LevelValid) \
+                .update({column: value}, synchronize_session=False)
+            session.commit()
+
+    for char in invalid_characteres:
+        value = sa.func.replace(Level.infraspecific_epithet, char, '')
+        session.query(Level) \
+            .update({Level.infraspecific_epithet: value}, synchronize_session=False)
+        session.commit()
+
+
+def remove_char_scientific_name_authorship(session):
+    exp = '!| |(|)|.|&'
+    for column in [LevelValid.scientific_name_authorship, LevelValid.scientific_name_authorship_valid]:
+        value = sa.func.regexp_replace(column, exp, '')
+        session.query(LevelValid) \
+            .update({column: value}, synchronize_session=False)
+        session.commit()
+
+    value = sa.func.regexp_replace(Level.scientific_name_authorship, exp, '')
+    session.query(Level) \
+        .update({Level.scientific_name_authorship: value}, synchronize_session=False)
+    session.commit()

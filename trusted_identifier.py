@@ -1,20 +1,19 @@
+import logging
+
 import pandas as pd
 
-from models import TrustedIdentifier, TrustedIdentifierSelected
-from sql import insert
+from models import TrustedIdentifier
+from sql import insert, is_query_empty
 
 
 def insert_trusted_identifier(session):
-    # if session.query(TrustedIdentifier).count() == 0:
-    df = pd.read_csv('./csv/trusted_identifiers.csv', sep=';', index_col=False, header=0)
-    df_selected = pd.read_csv('./csv/a.csv', sep=';', index_col=False, header=0)
-    for idx, row in df.iterrows():
-        t = TrustedIdentifier(fullname=row['fullname'], search=row['search'])
-        insert(t, session)
+    count = session.query(TrustedIdentifier).count()
+    if not is_query_empty(count):
+        logging.info('count of trusted identifier is %d' % count)
+        assert count == 340
+        return
 
-        df_value_founded = df_selected.loc[df_selected['fullname'].__eq__(row['fullname'])]
-        for idx, row in df_value_founded.iterrows():
-            tis = TrustedIdentifierSelected(value_founded=row['value_founded'],
-                                            selected=row['selected'],
-                                            trusted_identifier_id=t.id)
-            insert(tis, session)
+    df = pd.read_csv('./csv/a.csv', sep=';', index_col=False, header=0, encoding='utf-8')
+    for idx, row in df.iterrows():
+        t = TrustedIdentifier(fullname=row['fullname'], search=row['search'], value_founded=row['value_founded'], selected=row['selected'])
+        insert(t, session)

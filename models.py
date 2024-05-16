@@ -25,13 +25,13 @@ exsiccata_identifier = sa.Table(
     sa.Column('identifier_id', sa.ForeignKey('identifier.id')),
 )
 
-
 exsiccata_dataset = sa.Table(
     'exsiccata_dataset',
     Base.metadata,
     sa.Column('exsiccata_id', sa.ForeignKey('exsiccata.seq')),
     sa.Column('dataset_id', sa.ForeignKey('dataset.id')),
 )
+
 
 class County(Base):
     __tablename__ = 'county'
@@ -164,6 +164,7 @@ class Level(Base):
     infraspecific_epithet = sa.Column(sa.String, nullable=True)
     scientific_name = sa.Column(sa.String, nullable=True)
     scientific_name_authorship = sa.Column(sa.String, nullable=True)
+    level_valid: sa.orm.Mapped['LevelValid'] = sa.orm.relationship(back_populates='level')
 
     def __repr__(self):
         return 'Level(kingdom=%s, phylum=%s, classe=%s, order=%s, family=%s, genus=%s, specific_epithet=%s, infraspecific_epithet=%s, scientific_name=%s, scientific_name_authorship=%s)'
@@ -183,17 +184,8 @@ class TrustedIdentifier(Base):
     id: sa.orm.Mapped[int] = sa.orm.mapped_column(primary_key=True, autoincrement=True)
     fullname = sa.Column(sa.String, nullable=True)
     search = sa.Column(sa.String, nullable=True)
-    trusted_identifier_selected = sa.orm.relationship('TrustedIdentifierSelected', back_populates='trusted_identifier')
-
-
-class TrustedIdentifierSelected(Base):
-    __tablename__ = 'trusted_identifier_selected'
-
-    id: sa.orm.Mapped[int] = sa.orm.mapped_column(primary_key=True, autoincrement=True)
     value_founded = sa.Column(sa.String, nullable=True)
     selected = sa.Column(sa.Boolean, nullable=True)
-    trusted_identifier = sa.orm.relationship('TrustedIdentifier', back_populates='trusted_identifier_selected')
-    trusted_identifier_id = sa.Column(sa.Integer, sa.ForeignKey('trusted_identifier.id'))
 
 
 class Dataset(Base):
@@ -203,3 +195,20 @@ class Dataset(Base):
     name = sa.Column(sa.String, nullable=True)
     minimum = sa.Column(sa.Integer, nullable=True)
 
+
+class LevelValid(Base):
+    __tablename__ = 'level_valid'
+
+    id: sa.orm.Mapped[int] = sa.orm.mapped_column(primary_key=True, autoincrement=True)
+    kingdom = sa.Column(sa.String, nullable=True)
+    phylum = sa.Column(sa.String, nullable=True)
+    classe = sa.Column(sa.String, nullable=True)
+    order = sa.Column(sa.String, nullable=True)
+    family = sa.Column(sa.String, nullable=True)
+    genus = sa.Column(sa.String, nullable=True)
+    specific_epithet = sa.Column(sa.String, nullable=True)
+    infraspecific_epithet = sa.Column(sa.String, nullable=True)
+    scientific_name = sa.Column(sa.String, nullable=True)
+    scientific_name_authorship = sa.Column(sa.String, nullable=True)
+    level_id: sa.orm.Mapped[int] = sa.orm.mapped_column(sa.ForeignKey("level.id"))
+    level: sa.orm.Mapped['Level'] = sa.orm.relationship(back_populates="level_valid")

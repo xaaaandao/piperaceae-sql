@@ -75,8 +75,6 @@ o
 =
 identifier.py,a/0/a03f53704863088277a340d1ee3a7413dbeb794e
 8
-local.py,c/1/c1c83fde23944317cfcadb4adb8124162586978e
-8
 level.py,e/0/e0a1d1a0596ee8293b6db912133e4c3d3beb3fa4
 K
 csv/trusted_identifiers.csv,4/0/40444148af629b0f6a9958c3749b93b49007b44b
@@ -92,3 +90,11 @@ S
 #csv/2list_genus_species_correct.csv,4/3/438326576c3d9a9422a08d7862d920227ff13fd6
 E
 trusted_identifier.py,8/f/8f99120a19247e581f5cea0161ba816e4d7568cf
+>
+local/local.py,b/5/b5f9ce7e408a9574a777958d8efffe79d07c872e
+?
+local/county.py,f/4/f4d23622087438d8321e26c1932af7e417450fe4
+>
+local/state.py,9/e/9e1d796f408d29200d85880e1b407c7f6fc6bc46
+@
+local/country.py,7/7/77e557f91c8cc7773b9117c97bab942f71398c1d

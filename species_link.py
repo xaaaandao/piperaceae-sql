@@ -3,10 +3,10 @@ import logging
 import pandas as pd
 
 from dataframe import rename_header_dataframe, preprocess
-from identifier import insert_identifier, create_identifier
-from level import create_level, insert_level
-from local import insert_local, create_local
-from models import Exsiccata, Identifier, Local, Level
+from identifier import insert_identifier
+from level import insert_level
+from local.local import insert_local
+from models import Exsiccata
 from sql import is_query_empty, insert
 
 
@@ -29,23 +29,25 @@ def create_exsiccata(row):
 
 
 def insert_data_specieslink(session, filename='./csv/original.csv'):
-    df = pd.read_csv(filename, sep=';', low_memory=False, skipinitialspace=True)
-
     count = session.query(Exsiccata).count()
-    if is_query_empty(count):
-        rename_header_dataframe(df)
-        df = preprocess(df)
-        for idx, row in df.iterrows():
-            exsiccata = create_exsiccata(row)
-            level = insert_level(row, session)
-            identifier = insert_identifier(row, session)
-            exsiccata.levels.append(level)
-            exsiccata.identifiers.append(identifier)
-            insert(exsiccata, session)
-            insert_local(row, exsiccata, session)
+    if not is_query_empty(count):
+        logging.info('count of specieslink data is %d' % count)
+        assert count == 55453
+        return
+
+    df = pd.read_csv(filename, sep=';', low_memory=False, skipinitialspace=True, encoding='utf-8')
+    rename_header_dataframe(df)
+    df = preprocess(df)
+    for idx, row in df.iterrows():
+        exsiccata = create_exsiccata(row)
+        level = insert_level(row, session)
+        identifier = insert_identifier(row, session)
+        exsiccata.levels.append(level)
+        exsiccata.identifiers.append(identifier)
+        insert(exsiccata, session)
+        insert_local(row, exsiccata, session)
 
 
-    count = session.query(Exsiccata).count()
-    logging.info('count of specieslink data is %d' % count)
 
-    assert count == 55453
+
+

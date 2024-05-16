@@ -5,11 +5,12 @@ import sqlalchemy as sa
 
 def connect():
     url_object = sa.URL.create(
-        "postgresql+psycopg2",
-        username="xandao",
-        password="madu",  # plain (unescaped) text
-        host="localhost",
-        database="herbario_new",
+        'postgresql+psycopg2',
+        username='xandao',
+        password='madu',  # plain (unescaped) text
+        host='localhost',
+        database='herbario_new',
+        query={'client_encoding': 'utf8'}
     )
 
     try:
