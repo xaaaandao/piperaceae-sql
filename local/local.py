@@ -1,32 +1,9 @@
+import sqlalchemy as sa
+
+from database.models import Local
 from local.country import update_country
 from local.county import update_county
 from local.state import update_state
-from models import Local, LocalTrusted
-from sql import insert
-
-
-def create_local(data,exsiccata):
-    return Local(event_time=data['event_time'], continent_ocean=data['continent_ocean'], country=data['country'],
-                 state_province=data['state_province'], county=data['county'], locality=data['locality'],
-                 decimal_longitude=data['decimal_longitude'], decimal_latitude=data['decimal_latitude'],
-                 verbatim_longitude=data['verbatim_longitude'], verbatim_latitude=data['verbatim_latitude'],
-                 coordinate_precision=data['coordinate_precision'], bounding_box=data['bounding_box'],
-                 minimum_elevation_in_meters=data['minimum_elevation_in_meters'],
-                 maximum_elevation_in_meters=data['maximum_elevation_in_meters'],
-                 minimum_depth_in_meters=data['minimum_depth_in_meters'],
-                 maximum_depth_in_meters=data['maximum_depth_in_meters'],
-                 exsiccata_id=exsiccata.seq)
-
-
-def create_local_trusted(local):
-    return LocalTrusted(local_id=local.id)
-
-
-def insert_local(data, exsiccata, session):
-    local = create_local(data, exsiccata)
-    insert(local, session)
-    local_trusted = create_local_trusted(local)
-    insert(local_trusted, session)
 
 
 def update_local(session):
@@ -39,3 +16,29 @@ def update_local(session):
     update_county(session, unencoded_characters)
 
 
+def exists_local(row, session):
+    return session.query(Local) \
+        .filter(sa.and_(Local.continent_ocean.__eq__(row['continent_ocean']),
+                        Local.country_old.__eq__(row['country']),
+                        Local.state_province_old.__eq__(row['state_province']),
+                        Local.county_old.__eq__(row['county']),
+                        Local.locality.__eq__(row['locality']),
+                        Local.decimal_longitude.__eq__(row['decimal_longitude']),
+                        Local.decimal_latitude.__eq__(row['decimal_latitude']),
+                        Local.verbatim_longitude.__eq__(row['verbatim_longitude']),
+                        Local.verbatim_latitude.__eq__(row['verbatim_latitude']),
+                        Local.coordinate_precision.__eq__(row['coordinate_precision']))) \
+        .first()
+
+
+def create_local(row):
+    return Local(continent_ocean=row['continent_ocean'],
+                 country_old=row['country'],
+                 state_province_old=row['state_province'],
+                 county_old=row['county'],
+                 locality=row['locality'],
+                 decimal_longitude=row['decimal_longitude'],
+                 decimal_latitude=row['decimal_latitude'],
+                 verbatim_longitude=row['verbatim_longitude'],
+                 verbatim_latitude=row['verbatim_latitude'],
+                 coordinate_precision=row['coordinate_precision'])

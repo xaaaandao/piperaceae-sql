@@ -2,8 +2,8 @@ import logging
 
 import pandas as pd
 
-from models import GeorgeData
-from sql import is_query_empty, insert
+from database.models import GeorgeData
+from database.sql import is_query_empty, insert
 
 
 def insert_data_george(session, filename="./csv/george_data.csv"):
@@ -21,6 +21,3 @@ def insert_data_george(session, filename="./csv/george_data.csv"):
 
     for idx, row in df.iterrows():
         insert(GeorgeData(exsiccata_id=row[0]), session)
-
-
-
