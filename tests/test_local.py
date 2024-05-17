@@ -22,7 +22,7 @@ class Test(TestCase):
 
     def test_update_county_old_to_county(self):
         """
-        Testa se o registro seq=17127 não atualizou o campo county depois do update.
+        Testa se o registro seq=17127 não atualizou o campo api depois do update.
         """
         local = self.session.query(Local)\
             .filter(sa.and_(Local.id.__eq__(17127)))\

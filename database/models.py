@@ -66,7 +66,7 @@ class Exsiccata(Base):
     geo_flag = sa.Column(sa.String, nullable=True)
     level_id: sa.orm.Mapped[int] = sa.orm.mapped_column(sa.ForeignKey('level.id'))
     level: sa.orm.Mapped['Level'] = sa.orm.relationship(back_populates='exsiccata')
-    local_id: sa.orm.Mapped[int] = sa.orm.mapped_column(sa.ForeignKey('county.id'))
+    local_id: sa.orm.Mapped[int] = sa.orm.mapped_column(sa.ForeignKey('local.id'))
     local: sa.orm.Mapped['Local'] = sa.orm.relationship(back_populates='exsiccata')
     identifier_id: sa.orm.Mapped[int] = sa.orm.mapped_column(sa.ForeignKey('identifier.id'))
     identifier: sa.orm.Mapped['Identifier'] = sa.orm.relationship(back_populates='exsiccata')
@@ -101,7 +101,7 @@ class Level(Base):
 
 
 class Local(Base):
-    __tablename__ = 'county'
+    __tablename__ = 'local'
 
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     continent_ocean = sa.Column(sa.String, nullable=True)
@@ -117,7 +117,7 @@ class Local(Base):
     verbatim_longitude = sa.Column(sa.String, nullable=True)
     verbatim_latitude = sa.Column(sa.String, nullable=True)
     coordinate_precision = sa.Column(sa.Float, nullable=True)
-    exsiccata: sa.orm.Mapped['Exsiccata'] = sa.orm.relationship(back_populates='county')
+    exsiccata: sa.orm.Mapped['Exsiccata'] = sa.orm.relationship(back_populates='local')
 
 
 class Identifier(Base):

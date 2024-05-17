@@ -48,3 +48,6 @@ def get_name_state(json):
 
 def get_acronym_state(json):
     return json['microrregiao']['mesorregiao']['UF']['sigla']
+
+
+

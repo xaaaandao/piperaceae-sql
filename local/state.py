@@ -36,10 +36,10 @@ def update_state(session, unencoded_characters):
 
     update_state_unencoded(session, unencoded_characters)
     for state in states:
-        query = find_state_uf(state, session)
+        query = find_state_uf(session, state)
         locals_id = [q.id for q in query]
 
-        query = find_state(state, session)
+        query = find_state(session, state)
         locals_id = locals_id + [q.id for q in query]
 
         session.query(Local) \
@@ -76,3 +76,7 @@ def update_state_old_to_state(session):
                         Local.state_province_old.in_(states))) \
         .update({Local.state_province: Local.state_province_old}, synchronize_session=False)
     session.commit()
+
+
+def exists_state(session, state):
+    return session.query(State).filter(State.name.__eq__(state)).first()

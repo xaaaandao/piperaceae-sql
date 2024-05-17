@@ -1,12 +1,11 @@
 import datetime
 import logging
 
-from county.county import insert_counties
 from database.database import connect, create_table
 from george import insert_data_george
 from identifier import insert_trusted_identifier
 from database.models import get_base
-from local.county import update_county_old_to_county
+from local.county import insert_counties, update_county_old_to_county
 from local.local import update_local
 from local.state import update_state_old_to_state
 from species_link import insert_data_specieslink
