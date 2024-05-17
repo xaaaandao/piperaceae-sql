@@ -31,6 +31,7 @@ $ pip install psycopg2-binary
 
 ## CSV
 * `genus_species.csv`: contains old genus and new genus equivalent; 
-* `george_data.csv`: contains samples selected by george; 
+* `george_data.csv`: contains samples selected by george;
+* `images_invalid.csv`: contains the barcode with images invalid; 
 * `original.csv`: contains all samples founded in speciesLink;
 * `trusted_identifiers.csv`: contains the identifiers name selected by george.
