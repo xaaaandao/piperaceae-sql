@@ -147,3 +147,11 @@ class TrustedIdentifier(Base):
     search = sa.Column(sa.String, nullable=True)
     value_founded = sa.Column(sa.String, nullable=True)
     selected = sa.Column(sa.Boolean, nullable=True)
+
+
+class ImagesInvalid(Base):
+    __tablename__ = 'images_invalid'
+
+    id: sa.orm.Mapped[int] = sa.orm.mapped_column(primary_key=True, autoincrement=True)
+    barcode = sa.Column(sa.String, nullable=True)
+    reason = sa.Column(sa.String, nullable=True)
