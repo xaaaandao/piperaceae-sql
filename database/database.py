@@ -3,7 +3,7 @@ import logging
 import sqlalchemy as sa
 
 
-def connect():
+def connect(echo=True):
     url_object = sa.URL.create(
         'postgresql+psycopg2',
         username='xandao',
@@ -14,7 +14,7 @@ def connect():
     )
 
     try:
-        engine = sa.create_engine(url_object, echo=True, pool_pre_ping=True)
+        engine = sa.create_engine(url_object, echo=echo, pool_pre_ping=True)
         session = sa.orm.sessionmaker(bind=engine)
         session.configure(bind=engine)
         if engine.connect():

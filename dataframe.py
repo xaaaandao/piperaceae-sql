@@ -29,10 +29,10 @@ def get_columns_numeric(dataframe, table):
     list_columns_dataframe = [column.lower() for column in get_columns_dataframe(dataframe)]
     list_columns_table = [column for column in get_columns_table(table)]
     return [c_table.key for c_table in list_columns_table if
-            exits_column_table_in_dataframe(c_table, list_columns_dataframe) and column_table_is_numeric(c_table)]
+            exits_column_table_in_dataframe(c_table, list_columns_dataframe) and column_table___eq__numeric(c_table)]
 
 
-def column_table_is_numeric(c_table):
+def column_table___eq__numeric(c_table):
     return 'int' in str(c_table.type).lower() or 'float' in str(c_table.type).lower()
 
 
@@ -44,11 +44,11 @@ def get_columns_dataframe(dataframe):
     return [*dataframe.columns]
 
 
-def check_if_column_is_numeric(columns_dataframe, columns_table):
-    return str(columns_dataframe) in str(columns_table.type) and check_if_type_column_is_int_or_float(columns_table)
+def check_if_column___eq__numeric(columns_dataframe, columns_table):
+    return str(columns_dataframe) in str(columns_table.type) and check_if_type_column___eq__int_or_float(columns_table)
 
 
-def check_if_type_column_is_int_or_float(columns_table):
+def check_if_type_column___eq__int_or_float(columns_table):
     return str(columns_table.type).lower() in ('int', 'float')
 
 

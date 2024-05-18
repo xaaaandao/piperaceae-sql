@@ -73,12 +73,14 @@ def update_county_old_to_county(session):
     """
     query = session.query(County).all()
     counties = [q.name for q in query]
-    session.query(Local) \
-        .filter(sa.and_(Local.county.__eq__(None),
-                        Local.county_old.__ne__(None),
-                        Local.county_old.in_(counties))) \
-        .update({Local.county: Local.county_old}, synchronize_session=False)
-    session.commit()
+    c = session.query(Local) \
+            .filter(sa.and_(Local.county.__eq__(None), Local.county_old.__ne__(None), Local.county_old.in_(counties))) \
+            .count()
+    logging.info('aa %d' % c)
+    # session.query(Local) \
+    #     .filter(sa.and_(Local.county.__eq__(None), Local.county_old.__ne__(None), Local.county_old.in_(counties))) \
+    #     .update({Local.county: Local.county_old}, synchronize_session=False)
+    # session.commit()
 
 
 def insert_counties(session):

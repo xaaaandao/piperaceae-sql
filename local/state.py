@@ -4,21 +4,16 @@ from database.models import Local, State
 from database.unaccent import unaccent
 
 
-def find_state_uf(session, state):
-    return session.query(Local) \
-        .filter(sa.or_(Local.state_province_old.__eq__(state.uf),
-                       Local.state_province_old.__eq__(sa.func.lower(state.uf)))) \
-        .all()
-
-
 def find_state(session, state):
     return session.query(Local) \
-        .filter(sa.or_(Local.state_province_old.__eq__(state.name),
+        .filter(sa.or_(Local.state_province_old.__eq__(state.uf),
+                       Local.state_province_old.__eq__(sa.func.lower(state.uf)),
+                       Local.state_province_old.__eq__(state.name),
                        Local.state_province_old.__eq__(sa.func.upper(state.name)),
                        Local.state_province_old.__eq__(sa.func.lower(state.name)),
-                       Local.state_province_old.__eq__(unaccent(state.name)),
-                       Local.state_province_old.__eq__(unaccent(sa.func.upper(state.name))),
-                       Local.state_province_old.__eq__(unaccent(sa.func.lower(state.name))))) \
+                       unaccent(Local.state_province_old).__eq__(unaccent(state.name)),
+                       unaccent(sa.func.upper(Local.state_province_old)).__eq__(unaccent(sa.func.upper(state.name))),
+                       unaccent(sa.func.lower(Local.state_province_old)).__eq__(unaccent(sa.func.lower(state.name))))) \
         .all()
 
 
@@ -36,15 +31,16 @@ def update_state(session, unencoded_characters):
 
     update_state_unencoded(session, unencoded_characters)
     for state in states:
-        query = find_state_uf(session, state)
-        locals_id = [q.id for q in query]
+        # query = find_state_uf(session, state)
+        # locals_id = [q.id for q in query]
 
         query = find_state(session, state)
-        locals_id = locals_id + [q.id for q in query]
+        locals_id = [q.id for q in query]
 
         session.query(Local) \
             .filter(Local.id.in_(locals_id)) \
             .update({Local.state_province: state.name}, synchronize_session=False)
+
         session.commit()
 
 

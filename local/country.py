@@ -1,3 +1,5 @@
+import logging
+
 from database.models import Local
 
 
@@ -15,3 +17,11 @@ def update_country(session):
     session.query(Local) \
         .filter(Local.id.in_(locals_id)) \
         .update({Local.country: 'Brasil'}, synchronize_session=False)
+
+    session.commit()
+
+    count_variations_br = session.query(Local) \
+        .filter(Local.country_old.in_(br_variations)) \
+        .count()
+
+    logging.info('count of variations in %d' % count_variations_br)

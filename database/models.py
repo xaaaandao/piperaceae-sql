@@ -155,3 +155,15 @@ class ImagesInvalid(Base):
     id: sa.orm.Mapped[int] = sa.orm.mapped_column(primary_key=True, autoincrement=True)
     barcode = sa.Column(sa.String, nullable=True)
     reason = sa.Column(sa.String, nullable=True)
+
+
+class DatasetSamples(Base):
+    __tablename__ = 'datasets'
+
+    id: sa.orm.Mapped[int] = sa.orm.mapped_column(primary_key=True, autoincrement=True)
+    seq = sa.Column(sa.Integer, nullable=True)
+    genus = sa.Column(sa.String, nullable=True)
+    specie = sa.Column(sa.String, nullable=True)
+    name = sa.Column(sa.String, nullable=True)
+    minimum = sa.Column(sa.Integer, nullable=True)
+    version = sa.Column(sa.Integer, nullable=True)

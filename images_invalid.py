@@ -1,3 +1,11 @@
+import logging
+
+import pandas as pd
+
+from database.models import ImagesInvalid
+from database.sql import is_query_empty, insert
+
+
 def insert_images_invalid(session, filename="./csv/images_invalid.csv"):
     count = session.query(ImagesInvalid).count()
     if not is_query_empty(count):
@@ -9,4 +17,3 @@ def insert_images_invalid(session, filename="./csv/images_invalid.csv"):
 
     for idx, row in df.iterrows():
         insert(ImagesInvalid(row['barcode'], row['reason']))
-      
