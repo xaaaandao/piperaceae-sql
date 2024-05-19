@@ -28,11 +28,11 @@ def update_county_encoded_character(session):
     for c in counties:
         query = session.query(Local) \
             .filter(sa.or_(Local.county_old.__eq__(c.name),
-                           Local.county_old.__eq__(sa.func.lower(c.name)),
-                           Local.county_old.__eq__(sa.func.upper(c.name)),
-                           Local.county_old.__eq__(unaccent(c.name)),
-                           Local.county_old.__eq__(unaccent(sa.func.upper(c.name))),
-                           Local.county_old.__eq__(unaccent(sa.func.lower(c.name))))) \
+                           sa.func.lower(Local.county_old).__eq__(sa.func.lower(c.name)),
+                           sa.func.upper(Local.county_old).__eq__(sa.func.upper(c.name)),
+                           unaccent(Local.county_old).__eq__(unaccent(c.name)),
+                           sa.func.upper(unaccent(Local.county_old)).__eq__(unaccent(sa.func.upper(c.name))),
+                           sa.func.lower(unaccent(Local.county_old)).__eq__(unaccent(sa.func.lower(c.name))))) \
             .all()
 
         locals_id = [q.id for q in query]
@@ -60,7 +60,7 @@ def update_county(session, unencoded_characters):
     :param session:
     :param unencoded_characters:
     """
-    remove_words_county(session)
+    # remove_words_county(session)
     update_county_unencoded_character(session, unencoded_characters)
     update_county_encoded_character(session)
 

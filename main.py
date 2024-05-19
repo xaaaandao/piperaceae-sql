@@ -25,7 +25,7 @@ logging.basicConfig(format=format_error, datefmt='[%d/%m/%Y %H:%M:%S]', level=lo
 
 
 def main():
-    engine, session = connect(echo=False)
+    engine, session = connect()
     base = get_base()
 
     create_table(base, engine)
@@ -34,12 +34,12 @@ def main():
     insert_data_george(session)
     insert_trusted_identifier(session)
     # insert_images_invalid(session)
-    update_level(session)
-    update_level_valid(session)
-    update_local(session)
-    update_level_old_to_level(session)  # ok
-    update_county_old_to_county(session)
-    update_state_old_to_state(session)
+    # update_level(session)
+    # update_level_valid(session)
+    # update_local(session)
+    # update_level_old_to_level(session)  # ok
+    # update_county_old_to_county(session)
+    # update_state_old_to_state(session)
 
     load_datasetv1(session)
     load_datasetv2(session)

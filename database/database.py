@@ -9,7 +9,7 @@ def connect(echo=True):
         username='xandao',
         password='madu',  # plain (unescaped) text
         host='localhost',
-        database='herbario_new',
+        database='datasetv02',
         query={'client_encoding': 'utf8'}
     )
 
