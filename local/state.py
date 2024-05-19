@@ -6,14 +6,14 @@ from database.unaccent import unaccent
 
 def find_state(session, state):
     return session.query(Local) \
-        .filter(sa.or_(Local.state_province_old.__eq__(state.uf),
-                       sa.func.lower(Local.state_province_old).__eq__(sa.func.lower(state.uf)),
-                       Local.state_province_old.__eq__(state.name),
-                       sa.func.upper(Local.state_province_old).__eq__(sa.func.upper(state.name)),
-                       sa.func.lower(Local.state_province_old).__eq__(sa.func.lower(state.name)),
-                       unaccent(Local.state_province_old).__eq__(unaccent(state.name)),
-                       unaccent(sa.func.upper(Local.state_province_old)).__eq__(unaccent(sa.func.upper(state.name))),
-                       unaccent(sa.func.lower(Local.state_province_old)).__eq__(unaccent(sa.func.lower(state.name))))) \
+        .filter(sa.or_(Local.state_province.__eq__(state.uf),
+                       sa.func.lower(Local.state_province).__eq__(sa.func.lower(state.uf)),
+                       Local.state_province.__eq__(state.name),
+                       sa.func.upper(Local.state_province).__eq__(sa.func.upper(state.name)),
+                       sa.func.lower(Local.state_province).__eq__(sa.func.lower(state.name)),
+                       unaccent(Local.state_province).__eq__(unaccent(state.name)),
+                       unaccent(sa.func.upper(Local.state_province)).__eq__(unaccent(sa.func.upper(state.name))),
+                       unaccent(sa.func.lower(Local.state_province)).__eq__(unaccent(sa.func.lower(state.name))))) \
         .all()
 
 
@@ -45,30 +45,14 @@ def update_state_unencoded(session, unencoded_characters):
     for sc in zip(unencoded_characters['invalid'], unencoded_characters['valid']):
         sc_invalid = sc[0]
         sc_valid = sc[1]
-        value = sa.func.replace(Local.state_province_old, sc_invalid, sc_valid)
+        value = sa.func.replace(Local.state_province, sc_invalid, sc_valid)
         try:
             session.query(Local) \
-                .update(values={Local.state_province_old: value}, synchronize_session=False)
+                .update(values={Local.state_province: value}, synchronize_session=False)
             session.commit()
         except Exception as e:
             print(e)
             session.flush()
-
-
-def update_state_old_to_state(session):
-    """
-    Atualiza a coluna state_province com o valor que está na coluna antiga (state_province_old).
-    :param session:
-    :return:
-    """
-    query = session.query(State).all()
-    states = [q.name for q in query]
-    session.query(Local) \
-        .filter(sa.and_(Local.state_province.__eq__(None),
-                        Local.state_province_old.__ne__(None),
-                        Local.state_province_old.in_(states))) \
-        .update({Local.state_province: Local.state_province_old}, synchronize_session=False)
-    session.commit()
 
 
 def exists_state(session, state):

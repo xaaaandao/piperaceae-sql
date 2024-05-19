@@ -6,11 +6,20 @@ from local.county import update_county
 from local.state import update_state
 
 
+def update_old_to_new(session):
+    session.query(Local)\
+        .update({Local.country: Local.country_old,
+                 Local.state_province: Local.state_province_old,
+                 Local.county: Local.county_old}, synchronize_session=False)
+    session.commit()
+
+
 def update_local(session):
     unencoded_characters = {
         'invalid': ['Ã¡', 'Ãº', 'Ã', 'Ã³', 'Ã±', 'Ã©'],
         'valid': ['á', 'ú', 'í', 'ó', 'ñ', 'é']
     }
+    update_old_to_new(session)
     update_country(session)
     update_state(session, unencoded_characters)
     update_county(session, unencoded_characters)

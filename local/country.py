@@ -11,7 +11,7 @@ def update_country(session):
     br_variations = ['Brasil', 'BRASIL', 'Brasil/Bolivia', 'Brasilia', 'brazil', 'Brazil', 'BRazil', 'BRAZIL',
                      '[Brésil]', 'Brésil']
 
-    query = session.query(Local.id).filter(Local.country_old.in_(br_variations)).all()
+    query = session.query(Local.id).filter(Local.country.in_(br_variations)).all()
 
     locals_id = [q[0] for q in query]
     session.query(Local) \
@@ -19,9 +19,3 @@ def update_country(session):
         .update({Local.country: 'Brasil'}, synchronize_session=False)
 
     session.commit()
-
-    count_variations_br = session.query(Local) \
-        .filter(Local.country_old.in_(br_variations)) \
-        .count()
-
-    logging.info('count of variations in %d' % count_variations_br)

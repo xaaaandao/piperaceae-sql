@@ -51,19 +51,21 @@ def load_datasetv2(session, version=2):
     seqs = list(itertools.chain(*seqs))
 
     query = session.query(DatasetSamples) \
-        .filter(sa.and_(DatasetSamples.name.__eq__('br'),
+        .filter(sa.and_(DatasetSamples.name.__eq__('br_dataset'),
                         DatasetSamples.version.__eq__(2))) \
         .count()
 
-    if is_query_empty(query):
-        query = session.query(Exsiccata) \
-            .join(Identifier, Exsiccata.identifier_id.__eq__(Identifier.id)) \
-            .join(Level, Exsiccata.level_id.__eq__(Level.id)) \
-            .filter(Exsiccata.seq.in_(seqs)) \
-            .all()
+    print(len(seqs))
 
-        for q in query:
-            d = DatasetSamples(seq=q.seq, genus=q.level.genus,
-                               specie=q.level.specific_epithet,
-                               name='br_dataset', minimum=5, version=version)
-            insert(d, session)
+    # if is_query_empty(query):
+    #     query = session.query(Exsiccata) \
+    #         .join(Identifier, Exsiccata.identifier_id.__eq__(Identifier.id)) \
+    #         .join(Level, Exsiccata.level_id.__eq__(Level.id)) \
+    #         .filter(Exsiccata.seq.in_(seqs)) \
+    #         .all()
+    #
+    #     for q in query:
+    #         d = DatasetSamples(seq=q.seq, genus=q.level.genus,
+    #                            specie=q.level.specific_epithet,
+    #                            name='br_dataset', minimum=5, version=version)
+    #         insert(d, session)

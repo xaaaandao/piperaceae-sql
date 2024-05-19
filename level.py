@@ -28,25 +28,27 @@ def update_level(session):
     Remove caracteres indesejados de subespécie e nome científico.
     :param session:
     """
+    update_old_to_new(session)
     update_infraspecific_epithet(session)
     update_scientific_name_authorship(session)
     update_genus(session)
+    update_level_valid(session)
 
 
 def update_scientific_name_authorship(session):
     exp = '!| |(|)|.|&'
-    value = sa.func.regexp_replace(Level.scientific_name_authorship_old, exp, '')
+    value = sa.func.regexp_replace(Level.scientific_name_authorship, exp, '')
     session.query(Level) \
-        .update({Level.scientific_name_authorship_old: value}, synchronize_session=False)
+        .update({Level.scientific_name_authorship: value}, synchronize_session=False)
     session.commit()
 
 
 def update_infraspecific_epithet(session):
     invalid_characteres = ['f. ', 'var. ']
     for char in invalid_characteres:
-        value = sa.func.replace(Level.infraspecific_epithet_old, char, '')
+        value = sa.func.replace(Level.infraspecific_epithet, char, '')
         session.query(Level) \
-            .update({Level.infraspecific_epithet_old: value}, synchronize_session=False)
+            .update({Level.infraspecific_epithet: value}, synchronize_session=False)
         session.commit()
 
 
@@ -60,8 +62,8 @@ def update_genus(session):
         news = g[1]
         for old in olds:
             session.query(Level) \
-                .filter(Level.genus_old.__eq__(old)) \
-                .update(values={Level.genus_old: news}, synchronize_session=False)
+                .filter(Level.genus.__eq__(old)) \
+                .update(values={Level.genus: news}, synchronize_session=False)
             session.commit()
 
 
@@ -90,10 +92,10 @@ def update_level_valid(session, filename='./csv/genus_species.csv'):
 
     for idx, row in df.iterrows():
         session.query(Level) \
-            .filter(sa.and_(Level.genus_old.__eq__(row['genus']),
-                            Level.specific_epithet_old.__eq__(row['specific_epithet']),
-                            sa.or_(Level.infraspecific_epithet_old.__eq__(row['infraspecific_epithet']),
-                                   Level.scientific_name_authorship_old.__eq__(row['scientific_name_authorship'])))
+            .filter(sa.and_(Level.genus.__eq__(row['genus']),
+                            Level.specific_epithet.__eq__(row['specific_epithet']),
+                            sa.or_(Level.infraspecific_epithet.__eq__(row['infraspecific_epithet']),
+                                   Level.scientific_name_authorship.__eq__(row['scientific_name_authorship'])))
                     ) \
             .update({Level.genus: row['genus_trusted'],
                      Level.specific_epithet: row['specific_epithet_trusted'],
@@ -104,20 +106,10 @@ def update_level_valid(session, filename='./csv/genus_species.csv'):
         session.commit()
 
 
-def update_level_old_to_level(session):
+def update_old_to_new(session):
     session.query(Level) \
-        .filter(sa.and_(Level.genus_old.__ne__(None), Level.genus.__eq__(None))) \
-        .update({Level.genus: Level.genus_old}, synchronize_session=False)
-
-    session.query(Level) \
-        .filter(sa.and_(Level.specific_epithet_old.__ne__(None), Level.specific_epithet.__eq__(None))) \
-        .update({Level.specific_epithet: Level.specific_epithet_old}, synchronize_session=False)
-
-    session.query(Level) \
-        .filter(sa.and_(Level.infraspecific_epithet_old.__ne__(None), Level.infraspecific_epithet.__eq__(None))) \
-        .update({Level.infraspecific_epithet: Level.infraspecific_epithet_old}, synchronize_session=False)
-
-    session.query(Level) \
-        .filter(sa.and_(Level.scientific_name_authorship_old.__ne__(None), Level.scientific_name_authorship.__eq__(None))) \
-        .update({Level.scientific_name_authorship: Level.scientific_name_authorship_old}, synchronize_session=False)
+        .update({Level.genus: Level.genus_old,
+                 Level.specific_epithet: Level.specific_epithet_old,
+                 Level.infraspecific_epithet: Level.infraspecific_epithet_old,
+                 Level.scientific_name_authorship: Level.scientific_name_authorship_old}, synchronize_session=False)
     session.commit()
