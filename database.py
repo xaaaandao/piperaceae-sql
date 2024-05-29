@@ -1,4 +1,5 @@
 import os
+from typing import Any
 
 import sqlalchemy
 import sqlalchemy as sa
@@ -10,9 +11,17 @@ from models import DataIdentifiersSelectedGeorge
 from unaccent import unaccent
 
 
-def connect(echo=True, host='localhost', user=os.environ['myuser_pg'], password=os.environ['mypwd_pg'], port='5432', database='herbario'):
+def connect(echo: bool = True, host: str = 'localhost', user: str = os.environ['PGUSER'],
+            password: str = os.environ['PGPWD'], port: str = '5432', database: str = 'herbario'):
     try:
-        url = 'postgresql+psycopg2://%s:%s@%s:%s/%s' % (user, password, host, port, database)
+        url = sa.URL.create(
+            'postgresql+psycopg2',
+            username=user,
+            password=password,
+            host=host,
+            database=database,
+            port=port
+        )
         engine = sa.create_engine(url, echo=echo, pool_pre_ping=True)
         session = sqlalchemy.orm.sessionmaker(bind=engine)
         session.configure(bind=engine)
@@ -78,3 +87,24 @@ def get_state_uf_county(query):
 
 def table_is_empty(query):
     return query == 0
+
+
+def insert(data: Any, session):
+    try:
+        session.add(data)
+        session.commit()
+    except:
+        session.rollback()
+
+
+def inserts(data: list, session):
+    try:
+        session.adds(data)
+        session.commit()
+    except:
+        session.rollback()
+
+
+def close(engine, session):
+    engine.dispose()
+    session.close()

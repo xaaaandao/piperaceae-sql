@@ -4,6 +4,8 @@ import sqlalchemy.orm
 
 Base = sa.ext.declarative.declarative_base()
 
+def get_base():
+    return Base
 
 def create_data_trusted_identifier(info):
     return DataIdentifiersSelectedGeorge(seq=info.seq,
@@ -251,4 +253,23 @@ class Image(Base):
     path = sa.Column(sa.String, nullable=True)
     filename = sa.Column(sa.String, nullable=True)
     seq_id = sa.Column(sa.Integer, sa.ForeignKey('data_identifiers_selected_george.seq'))
+
+
+class Dataset(Base):
+    __tablename__ = 'dataset'
+
+    id = sa.Column(sa.BigInteger, primary_key=True, autoincrement=True)
+    seq = sa.Column(sa.Integer, nullable=True)
+    genus = sa.Column(sa.String, nullable=True)
+    specific_epithet = sa.Column(sa.String, nullable=True)
+    genus_trusted = sa.Column(sa.String, nullable=True)
+    specific_epithet_trusted = sa.Column(sa.String, nullable=True)
+    country = sa.Column(sa.String, nullable=True)
+    country_trusted = sa.Column(sa.String, nullable=True)
+    county = sa.Column(sa.String, nullable=True)
+    state_province = sa.Column(sa.String, nullable=True)
+    name = sa.Column(sa.String, nullable=True)
+    region = sa.Column(sa.String, nullable=True)
+    minimum = sa.Column(sa.String, nullable=True)
+    version = sa.Column(sa.Integer, nullable=True)
 
