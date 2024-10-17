@@ -3,12 +3,12 @@ import pathlib
 
 import database as db
 
-from models import Image, DataIdentifierSelectedGeorge
+from models import Image, DataIdentifiersSelectedGeorge
 
 
 def add_seq_each_image(session):
-    query = session.query(DataIdentifierSelectedGeorge) \
-        .filter(DataIdentifierSelectedGeorge.list_title.is_not(None)) \
+    query = session.query(DataIdentifiersSelectedGeorge) \
+        .filter(DataIdentifiersSelectedGeorge.list_title.is_not(None)) \
         .all()
 
     for i, q in enumerate(query):

@@ -11,8 +11,8 @@ from models import DataIdentifiersSelectedGeorge
 from unaccent import unaccent
 
 
-def connect(echo: bool = True, host: str = 'localhost', user: str = os.environ['PGUSER'],
-            password: str = os.environ['PGPWD'], port: str = '5432', database: str = 'herbario'):
+def connect(echo: bool = True, host: str = 'localhost', user: str = 'xandao',
+            password: str = 'a', port: str = '5432', database: str = 'herbario2'):
     try:
         url = sa.URL.create(
             'postgresql+psycopg2',
