@@ -29,9 +29,8 @@ def insert_trusted_identifiers(session, filename='./trusted_identifier/trusted_i
                                        trusted=row[dict_cols['trusted']])
         db.insert(identifier, session)
 
-def main():
-    engine, session = db.connect()
 
+def set_trusted_identifiers(session):
     query = session.query(TrustedIdentifier.value_founded) \
         .filter(TrustedIdentifier.trusted) \
         .distinct() \
@@ -44,39 +43,32 @@ def main():
         .count()
 
     # this query should return 13182 rows
+    assert (count_of_records_with_variations_identifier_name == 13182)
     print(count_of_records_with_variations_identifier_name)
 
-    # insert_data_identifiers_selected_george(list_variations_of_identifiers_trusted, session)
-
-    session.close()
-    engine.dispose()
+    insert_data_identifiers_selected_george(list_variations_of_identifiers_trusted, session)
 
 
+def insert_data_identifiers_selected_george(list_variations_of_identifiers_trusted, session):
+    if db.count_of_table(session, DataIdentifiersSelectedGeorge) == 13182:
+        return
+
+    query = session.query(DataSP) \
+        .filter(DataSP.identified_by.in_(list_variations_of_identifiers_trusted)) \
+        .all()
+
+    for i, q in enumerate(query):
+        print('%d/%d' % (i, len(query)))
+        new_data_of_identifier_trusted = create_data_trusted_identifier(q)
+        db.insert(new_data_of_identifier_trusted, session)
+        # session.add(new_data_of_identifier_trusted)
+
+    #
+    count_data_from_trusted_identifers = session.query(DataIdentifiersSelectedGeorge).count()
+    # # this query should return 13182 rows
+    print('count of records in table %s: %d' % (
+        DataIdentifiersSelectedGeorge.__tablename__, count_data_from_trusted_identifers))
 
 
-
-# def insert_data_identifiers_selected_george(list_variations_of_identifiers_trusted, session):
-#     count_data_in_data_trusted_identifier = session.query(DataIdentifiersSelectedGeorge).count()
-#
-#     if count_data_in_data_trusted_identifier == 0:
-#         query = session.query(DataSP) \
-#             .filter(DataSP.identified_by.in_(list_variations_of_identifiers_trusted)) \
-#             .all()
-#
-#         for i, q in enumerate(query):
-#             print('%d/%d' % (i, len(query)))
-#             try:
-#                 new_data_of_identifier_trusted = create_data_trusted_identifier(q)
-#                 session.add(new_data_of_identifier_trusted)
-#                 session.commit()
-#             except Exception as e:
-#                 print(e)
-
-#     count_data_from_trusted_identifers = session.query(DataIdentifiersSelectedGeorge).count()
-#     # this query should return 13182 rows
-#     print('count of records in table %s: %d' % (
-#         DataIdentifiersSelectedGeorge.__tablename__, count_data_from_trusted_identifers))
-
-
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
