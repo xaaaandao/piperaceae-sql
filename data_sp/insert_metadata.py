@@ -3,7 +3,7 @@ import pandas as pd
 import re
 
 import database as db
-from database import get_columns_table
+from database import get_columns_table, insert
 from models import DataSP
 
 
@@ -62,60 +62,60 @@ def get_columns_dataframe(dataframe):
     return [*dataframe.columns]
 
 
-def parse_row(info):
-    return DataSP(seq=info['seq'],
-                  modified=info['modified'], institution_code=info['institution_code'],
-                  collection_code=info['collection_code'], catalog_number=info['catalog_number'],
-                  basis_of_record=info['basis_of_record'], kingdom=info['kingdom'], phylum=info['phylum'],
-                  classe=info['class'], order=info['order'], family=info['family'],
-                  genus=info['genus'],
-                  specific_epithet=info['specific_epithet'],
-                  infraspecific_epithet=info['infraspecific_epithet'],
-                  scientific_name=info['scientific_name'],
-                  scientific_name_authorship=info['scientific_name_authorship'],
-                  identified_by=info['identified_by'], year_identified=info['year_identified'],
-                  month_identified=info['month_identified'], day_identified=info['day_identified'],
-                  type_status=info['type_status'],
-                  recorded_by=info['recorded_by'], record_number=info['record_number'],
-                  field_number=info['field_number'], year=info['year'], month=info['month'],
-                  day=info['day'], event_time=info['event_time'],
-                  continent_ocean=info['continent_ocean'], country=info['country'],
-                  state_province=info['state_province'], county=info['county'], locality=info['locality'],
-                  decimal_longitude=info['decimal_longitude'],
-                  decimal_latitude=info['decimal_latitude'], verbatim_longitude=info['verbatim_longitude'],
-                  verbatim_latitude=info['verbatim_latitude'],
-                  coordinate_precision=info['coordinate_precision'],
-                  bounding_box=info['bounding_box'],
-                  minimum_elevation_in_meters=info['minimum_elevation_in_meters'],
-                  maximum_elevation_in_meters=info['maximum_elevation_in_meters'],
-                  minimum_depth_in_meters=info['minimum_depth_in_meters'],
-                  maximum_depth_in_meters=info['maximum_depth_in_meters'], sex=info['sex'],
-                  preparation_type=info['preparation_type'],
-                  individual_count=info['individual_count'],
-                  previous_catalog_number=info['previous_catalog_number'],
-                  relationship_type=info['relationship_type'],
-                  related_catalog_item=info['related_catalog_item'],
-                  occurrence_remarks=info['occurrence_remarks'], barcode=info['barcode'],
-                  imagecode=info['imagecode'], geo_flag=info['geo_flag'])
+def create_datasp(dict_cols:dict, row):
+    return DataSP(seq=row[dict_cols['seq']],
+                  modified=row[dict_cols['modified']], institution_code=row[dict_cols['institution_code']],
+                  collection_code=row[dict_cols['collection_code']], catalog_number=row[dict_cols['catalog_number']],
+                  basis_of_record=row[dict_cols['basis_of_record']], kingdom=row[dict_cols['kingdom']], phylum=row[dict_cols['phylum']],
+                  classe=row[dict_cols['class']], order=row[dict_cols['order']], family=row[dict_cols['family']],
+                  genus=row[dict_cols['genus']],
+                  specific_epithet=row[dict_cols['specific_epithet']],
+                  infraspecific_epithet=row[dict_cols['infraspecific_epithet']],
+                  scientific_name=row[dict_cols['scientific_name']],
+                  scientific_name_authorship=row[dict_cols['scientific_name_authorship']],
+                  identified_by=row[dict_cols['identified_by']], year_identified=row[dict_cols['year_identified']],
+                  month_identified=row[dict_cols['month_identified']], day_identified=row[dict_cols['day_identified']],
+                  type_status=row[dict_cols['type_status']],
+                  recorded_by=row[dict_cols['recorded_by']], record_number=row[dict_cols['record_number']],
+                  field_number=row[dict_cols['field_number']], year=row[dict_cols['year']], month=row[dict_cols['month']],
+                  day=row[dict_cols['day']], event_time=row[dict_cols['event_time']],
+                  continent_ocean=row[dict_cols['continent_ocean']], country=row[dict_cols['country']],
+                  state_province=row[dict_cols['state_province']], county=row[dict_cols['county']], locality=row[dict_cols['locality']],
+                  decimal_longitude=row[dict_cols['decimal_longitude']],
+                  decimal_latitude=row[dict_cols['decimal_latitude']], verbatim_longitude=row[dict_cols['verbatim_longitude']],
+                  verbatim_latitude=row[dict_cols['verbatim_latitude']],
+                  coordinate_precision=row[dict_cols['coordinate_precision']],
+                  bounding_box=row[dict_cols['bounding_box']],
+                  minimum_elevation_in_meters=row[dict_cols['minimum_elevation_in_meters']],
+                  maximum_elevation_in_meters=row[dict_cols['maximum_elevation_in_meters']],
+                  minimum_depth_in_meters=row[dict_cols['minimum_depth_in_meters']],
+                  maximum_depth_in_meters=row[dict_cols['maximum_depth_in_meters']], sex=row[dict_cols['sex']],
+                  preparation_type=row[dict_cols['preparation_type']],
+                  individual_count=row[dict_cols['individual_count']],
+                  previous_catalog_number=row[dict_cols['previous_catalog_number']],
+                  relationship_type=row[dict_cols['relationship_type']],
+                  related_catalog_item=row[dict_cols['related_catalog_item']],
+                  occurrence_remarks=row[dict_cols['occurrence_remarks']], barcode=row[dict_cols['barcode']],
+                  imagecode=row[dict_cols['imagecode']], geo_flag=row[dict_cols['geo_flag']])
 
 
 def insert_row(df, session):
-    n_rows = len(list(df.iterrows()))
-    for i, (idx, row) in enumerate(df.iterrows()):
-        print('%d/%d' % (i, n_rows))
-        data_sp = parse_row(row)
-        try:
-            session.add(data_sp)
-            session.commit()
-        except Exception as e:
-            print(e)
-            session.flush()
+    dict_cols = {j: i for i, j in enumerate(df.columns)}
+
+    if db.count_of_table(session, DataSP) == 55453:
+        return
+
+    for row in df.values:
+        data = create_datasp(dict_cols, row)
+        insert(data, session)
+
+    assert(db.count_of_table(session, DataSP) == 55453)
 
 
-def main():
-    engine, session = db.connect()
+def insert_csv_sp(session, filename='./csv/original.csv'):
+    # engine, session = db.connect()
 
-    filename = '../csv/original.csv'
+    # filename = '../csv/original.csv'
     df = pd.read_csv(filename, sep=';', low_memory=False, skipinitialspace=True)
 
     if db.table_is_empty(count_in_data_sp(session)):
@@ -123,9 +123,7 @@ def main():
         insert_row(df, session)
 
 
-    session.close()
-    engine.dispose()
+    # session.close()
+    # engine.dispose()
 
 
-if __name__ == '__main__':
-    main()

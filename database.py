@@ -12,7 +12,7 @@ from unaccent import unaccent
 
 
 def connect(echo: bool = True, host: str = 'localhost', user: str = 'xandao',
-            password: str = 'a', port: str = '5432', database: str = 'herbario2'):
+            password: str = 'madu', port: str = '5432', database: str = 'genero_especie'):
     try:
         url = sa.URL.create(
             'postgresql+psycopg2',
@@ -104,6 +104,8 @@ def inserts(data: list, session):
     except:
         session.rollback()
 
+def count_of_table(session, table):
+    return session.query(table).count()
 
 def close(engine, session):
     engine.dispose()

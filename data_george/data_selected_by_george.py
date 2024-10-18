@@ -4,10 +4,10 @@ import database as db
 from models import DataSP
 
 
-def update_record_data_sp(row, session):
+def update_record_data_sp(dict_cols, row, session):
     try:
         session.query(DataSP) \
-            .filter(DataSP.seq == row['seq']) \
+            .filter(DataSP.seq == row[dict_cols['seq']]) \
             .update({'george': True}, synchronize_session=False)
         session.commit()
     except Exception as e:
@@ -15,36 +15,26 @@ def update_record_data_sp(row, session):
         session.flush()
 
 
-def get_value_column_george(row):
-    return row['GEORGE'].lower()
-
-
-def george_selected_data(row):
-     return get_value_column_george(row) == 'sim'
+def george_selected_data(dict_cols, row):
+     return row[dict_cols['GEORGE']].lower() == 'sim'
 
 
 def count_records_selected_by_george(session):
     return session.query(DataSP).filter(DataSP.george).count()
 
 
-def main():
-    engine, session = db.connect()
-
-    filename = '../csv/george_data.csv'
+def set_george_data(session, filename='./csv/george_data.csv'):
     df = pd.read_csv(filename, sep=';', low_memory=False, skipinitialspace=True)
 
-    if count_records_selected_by_george(session) == 0:
-        n_rows = len(list(df.iterrows()))
-        for i, (idx, row) in enumerate(df.iterrows()):
-            print('%d/%d' % (i, n_rows))
-            if george_selected_data(row):
-                update_record_data_sp(row, session)
+    if count_records_selected_by_george(session) == 1419:
+        return
+
+    dict_cols = {j: i for i, j in enumerate(df.columns)}
+    for row in df.values:
+        if george_selected_data(dict_cols, row):
+            update_record_data_sp(dict_cols, row, session)
 
     # this query should return 1419 rows
-    print('George selected %d rows' % count_records_selected_by_george(session))
-    session.close()
-    engine.dispose()
+    assert(count_records_selected_by_george(session) == 1419)
 
 
-if __name__ == '__main__':
-    main()

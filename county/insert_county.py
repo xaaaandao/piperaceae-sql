@@ -53,18 +53,8 @@ def count_in_county_table(session):
         session.flush()
 
 
-def parse_json(json):
+def create_county(json):
     return County(id=get_id(json), county=get_acronym_state(json), uf=get_uf(json), state=get_name_state(json), regiao=get_region_name(json))
-
-
-def insert_new_county(json, session):
-    c = parse_json(json)
-    try:
-        session.add(c)
-        session.commit()
-    except Exception as e:
-        print(e)
-        session.flush()
 
 
 def get_municipios():
@@ -75,20 +65,16 @@ def get_municipios():
         print(e)
 
 
-def main():
-    engine, session = db.connect()
-
+def insert_counties(session):
     # pip install pyopenssl cryptography
     response = get_municipios()
     query = count_in_county_table(session)
-    if db.table_is_empty(query):
-        for i, j in enumerate(response.json()):
-            print('%d/%d' % (i, len(response.json())))
-            insert_new_county(j, session)
 
-    session.close()
-    engine.dispose()
+    if db.table_is_empty(query) == 5570:
+        return
 
+    for i, j in enumerate(response.json()):
+        c = create_county(j)
+        db.insert(c, session)
 
-if __name__ == '__main__':
-    main()
+    assert(count_in_county_table(session) == 5570)
